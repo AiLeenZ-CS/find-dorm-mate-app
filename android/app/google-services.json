@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "806571724387",
+    "project_id": "find-dorm-mate",
+    "storage_bucket": "find-dorm-mate.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:806571724387:android:213a3df724dd4ca138b256",
+        "android_client_info": {
+          "package_name": "com.example.find_dorm_mate"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDD2ChYnb22AeBD_LninJTUC7vOp9nHpuE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

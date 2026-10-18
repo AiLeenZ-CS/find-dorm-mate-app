@@ -1,0 +1,59 @@
+rules_version = '2';
+
+// ระบบแชทกลุ่มรูมเมท — เก็บที่ collection "roommate_chats/post_{postId}"
+// เอกสารหลัก (roommate_chats/post_{postId}) เขียนได้จาก Firebase Admin SDK (Backend) เท่านั้น
+// ตอนอนุมัติคำขอจับคู่สำเร็จ (ดู syncChatParticipants ใน Backend/src/controllers/roommate.controller.ts)
+// Client (Flutter) ทำได้แค่อ่าน participantIds เพื่อเช็คสิทธิ์ และเขียนข้อความใน subcollection "messages"
+//
+// ระบบแชท 1:1 "ก่อนตอบรับ" — เก็บที่ collection "roommate_pre_chats/match_{matchId}" แยกจาก
+// roommate_chats โดยสิ้นเชิง (คนละห้อง คนละสิทธิ์) ให้เจ้าของประกาศคุยกับผู้ขอแต่ละคนก่อน
+// ตัดสินใจอนุมัติ/ปฏิเสธได้ โดยไม่ปนกับคนที่ Matched แล้วคนอื่นในกลุ่ม (ดู syncPreChatParticipants
+// และ openPreMatchChat ใน Backend/src/controllers/roommate.controller.ts) กฎเหมือน roommate_chats
+// ทุกอย่าง แค่เปลี่ยนชื่อ collection
+//
+// วิธี deploy: Firebase Console → Firestore Database → แท็บ Rules → วางไฟล์นี้ทับ → Publish
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /roommate_chats/{chatId} {
+      // อ่านห้องแชทได้เฉพาะคนที่ uid (member_<Member_ID>) อยู่ใน participantIds เท่านั้น
+      allow read: if request.auth != null
+                  && request.auth.uid in resource.data.participantIds;
+
+      // ห้าม client แก้ไข/สร้างเอกสารหลักเอง (participantIds ต้องมาจาก backend ที่ตรวจสิทธิ์แล้ว)
+      allow write: if false;
+
+      match /messages/{messageId} {
+        // อ่านข้อความได้เฉพาะสมาชิกในกลุ่ม (เช็คจาก participantIds ของเอกสารหลัก)
+        allow read: if request.auth != null
+                    && request.auth.uid in get(/databases/$(database)/documents/roommate_chats/$(chatId)).data.participantIds;
+
+        // ส่งข้อความได้เฉพาะสมาชิกในกลุ่ม และต้องระบุ senderId เป็นตัวเองเท่านั้น (กัน
+        // การปลอมตัวส่งข้อความในนามคนอื่น)
+        allow create: if request.auth != null
+                      && request.auth.uid in get(/databases/$(database)/documents/roommate_chats/$(chatId)).data.participantIds
+                      && request.resource.data.senderId == request.auth.uid;
+
+        // ห้ามแก้ไข/ลบข้อความย้อนหลัง (เก็บประวัติแชทไว้ตามที่ส่งจริง)
+        allow update, delete: if false;
+      }
+    }
+
+    match /roommate_pre_chats/{chatId} {
+      allow read: if request.auth != null
+                  && request.auth.uid in resource.data.participantIds;
+
+      allow write: if false;
+
+      match /messages/{messageId} {
+        allow read: if request.auth != null
+                    && request.auth.uid in get(/databases/$(database)/documents/roommate_pre_chats/$(chatId)).data.participantIds;
+
+        allow create: if request.auth != null
+                      && request.auth.uid in get(/databases/$(database)/documents/roommate_pre_chats/$(chatId)).data.participantIds
+                      && request.resource.data.senderId == request.auth.uid;
+
+        allow update, delete: if false;
+      }
+    }
+  }
+}

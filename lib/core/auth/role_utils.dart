@@ -1,0 +1,4 @@
+// 🚀 เช็คว่า role ที่เก็บไว้ (ใน SharedPreferences/response จาก backend) นับเป็น "เจ้าของหอพัก" ไหม
+// ใช้ค่าเดียวจากจุดนี้แทนการเทียบ 'Owner' || 'Dorm_Owner' ที่เคยก็อปกระจายอยู่ 8 จุดทั่วแอป
+// (Dorm_Owner เป็นค่าเก่าที่ยังพบในข้อมูล/โค้ดบางส่วนก่อนเปลี่ยนมาใช้ 'Owner' เป็นมาตรฐาน)
+bool isOwnerRole(String? role) => role == 'Owner' || role == 'Dorm_Owner';

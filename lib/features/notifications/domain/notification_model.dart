@@ -1,0 +1,33 @@
+class AppNotification {
+  final int id;
+  final String type;
+  final String title;
+  final String? body;
+  final String? link;
+  final bool isRead;
+  final DateTime? createdAt;
+
+  AppNotification({
+    required this.id,
+    required this.type,
+    required this.title,
+    this.body,
+    this.link,
+    required this.isRead,
+    this.createdAt,
+  });
+
+  factory AppNotification.fromJson(Map<String, dynamic> json) {
+    return AppNotification(
+      id: json['Notification_ID'],
+      type: json['Type'] ?? '',
+      title: json['Title'] ?? '',
+      body: json['Body'],
+      link: json['Link'],
+      isRead: json['Is_Read'] == true,
+      createdAt: json['Created_At'] != null
+          ? DateTime.tryParse(json['Created_At'])
+          : null,
+    );
+  }
+}
