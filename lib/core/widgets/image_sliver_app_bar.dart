@@ -36,7 +36,10 @@ class _ImageSliverAppBarState extends State<ImageSliverAppBar> {
     return SliverAppBar(
       expandedHeight: 320,
       pinned: true,
-      stretch: true,
+      // 🚨 ห้ามเปิด stretch: true — ชนกับ RefreshIndicator ของหน้าที่เรียกใช้ widget นี้
+      // (dorm_detail_screen.dart, room_type_detail_screen.dart) ทั้งคู่แย่ง gesture การลาก
+      // "ดึงจอลงเกินขอบบน" ตัวเดียวกัน พอเปิด stretch ไว้ SliverAppBar จะกินการลากไปทำ
+      // เอฟเฟกต์ซูมรูปเองก่อน ทำให้ RefreshIndicator ไม่ทำงานเลยไม่ว่าจะลากแรง/นานแค่ไหน
       backgroundColor: colorScheme.surface,
       foregroundColor: colorScheme.onSurface,
       elevation: 0,
@@ -47,10 +50,7 @@ class _ImageSliverAppBarState extends State<ImageSliverAppBar> {
           onTap: () => Navigator.of(context).maybePop(),
         ),
       ),
-      flexibleSpace: FlexibleSpaceBar(
-        stretchModes: const [StretchMode.zoomBackground],
-        background: _buildImageCarousel(),
-      ),
+      flexibleSpace: FlexibleSpaceBar(background: _buildImageCarousel()),
     );
   }
 
