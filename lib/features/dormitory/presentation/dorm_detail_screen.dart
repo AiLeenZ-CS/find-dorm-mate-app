@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/dorm_repository.dart';
+import 'package:find_dorm_mate/features/reviews/data/review_repository.dart';
 import 'package:find_dorm_mate/core/widgets/image_sliver_app_bar.dart';
 import 'package:find_dorm_mate/core/widgets/facilities_section.dart';
 import 'widgets/dorm_detail/dorm_header_section.dart';
@@ -35,9 +36,8 @@ class DormDetailScreen extends ConsumerWidget {
     final detailAsyncValue = ref.watch(dormDetailProvider(dormId));
 
     return detailAsyncValue.when(
-      loading: () => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      ),
+      loading: () =>
+          const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (err, stack) => Scaffold(
         appBar: AppBar(title: const Text('รายละเอียดหอพัก')),
         body: Center(
@@ -46,7 +46,11 @@ class DormDetailScreen extends ConsumerWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.error_outline, size: 56, color: Colors.redAccent),
+                const Icon(
+                  Icons.error_outline,
+                  size: 56,
+                  color: Colors.redAccent,
+                ),
                 const SizedBox(height: 16),
                 Text(
                   'เกิดข้อผิดพลาด: $err',
@@ -65,44 +69,54 @@ class DormDetailScreen extends ConsumerWidget {
         return Scaffold(
           extendBodyBehindAppBar: true,
           bottomNavigationBar: DormBottomActionBar(dorm: dorm),
-          body: CustomScrollView(
-            slivers: [
-              ImageSliverAppBar(
-                images: imageUrls,
-                placeholderIcon: Icons.apartment,
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      DormHeaderSection(dorm: dorm),
-                      if (hasDescription) ...[
+          body: RefreshIndicator(
+            onRefresh: () async {
+              ref.invalidate(dormDetailProvider(dormId));
+              ref.invalidate(dormReviewsProvider(dormId));
+              await ref.read(dormDetailProvider(dormId).future);
+            },
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: [
+                ImageSliverAppBar(
+                  images: imageUrls,
+                  placeholderIcon: Icons.apartment,
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        DormHeaderSection(dorm: dorm),
+                        if (hasDescription) ...[
+                          const _SectionGap(),
+                          DormDescriptionSection(
+                            description: dorm.description!,
+                          ),
+                        ],
                         const _SectionGap(),
-                        DormDescriptionSection(description: dorm.description!),
+                        DormCostRulesSection(
+                          depositFee: dorm.depositFee,
+                          insuranceFee: dorm.insuranceFee,
+                          isPetFriendly: dorm.isPetFriendly,
+                          isSmokingAllowed: dorm.isSmokingAllowed,
+                        ),
+                        const _SectionGap(),
+                        FacilitiesSection(
+                          facilities: dorm.facilities,
+                          customFacilities: dorm.customFacilities,
+                        ),
+                        const _SectionGap(),
+                        DormRoomTypesSection(roomTypes: dorm.roomTypes),
+                        const _SectionGap(),
+                        DormReviewsSection(dormId: dorm.id),
                       ],
-                      const _SectionGap(),
-                      DormCostRulesSection(
-                        depositFee: dorm.depositFee,
-                        insuranceFee: dorm.insuranceFee,
-                        isPetFriendly: dorm.isPetFriendly,
-                        isSmokingAllowed: dorm.isSmokingAllowed,
-                      ),
-                      const _SectionGap(),
-                      FacilitiesSection(
-                        facilities: dorm.facilities,
-                        customFacilities: dorm.customFacilities,
-                      ),
-                      const _SectionGap(),
-                      DormRoomTypesSection(roomTypes: dorm.roomTypes),
-                      const _SectionGap(),
-                      DormReviewsSection(dormId: dorm.id),
-                    ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },

@@ -288,8 +288,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       case HomeSortOption.recommended:
         // 🚀 เรียงตามคะแนนรีวิวเฉลี่ยสูงสุดก่อน หอที่ยังไม่มีรีวิวดันไปท้ายลิสต์เสมอ
         sorted.sort(
-          (a, b) =>
-              (b.averageRating ?? -1).compareTo(a.averageRating ?? -1),
+          (a, b) => (b.averageRating ?? -1).compareTo(a.averageRating ?? -1),
         );
         break;
       case HomeSortOption.priceLowToHigh:
@@ -353,70 +352,79 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             dorms.where(_passesFilters).toList(),
           );
 
-          return CustomScrollView(
-            slivers: [
-              SliverToBoxAdapter(
-                child: HomeSearchHeader(
-                  username: _username,
-                  onSearchChanged: (value) =>
-                      setState(() => _searchQuery = value),
-                  onMapTap: () => context.push('/map'),
-                  onFilterTap: _openFilterSheet,
-                  onChatTap: _handleChatTap,
-                  activeFilterCount: _filters.activeFilterCount,
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: HomeSortBar(
-                  resultCount: filteredDorms.length,
-                  selected: _sortOption,
-                  isLocating: _isLocating,
-                  onSelected: _handleSortSelected,
-                ),
-              ),
-              if (filteredDorms.isEmpty)
+          return RefreshIndicator(
+            onRefresh: () async {
+              ref.invalidate(dormListProvider);
+              await ref.read(dormListProvider.future);
+            },
+            child: CustomScrollView(
+              // 🚀 บังคับให้ลากดึงจอลงได้เสมอแม้รายการสั้นจนเนื้อหาไม่เต็มจอ (ปกติ
+              // RefreshIndicator จะไม่ทำงานถ้าเนื้อหาไม่ล้นจอพอให้ scroll ได้)
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: [
                 SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 60),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.search_off,
-                          size: 80,
-                          color: Colors.grey.shade300,
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          'ไม่พบหอพักที่ตรงกับเงื่อนไข',
-                          style: TextStyle(
-                            color: Colors.grey.shade500,
-                            fontSize: 18,
+                  child: HomeSearchHeader(
+                    username: _username,
+                    onSearchChanged: (value) =>
+                        setState(() => _searchQuery = value),
+                    onMapTap: () => context.push('/map'),
+                    onFilterTap: _openFilterSheet,
+                    onChatTap: _handleChatTap,
+                    activeFilterCount: _filters.activeFilterCount,
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: HomeSortBar(
+                    resultCount: filteredDorms.length,
+                    selected: _sortOption,
+                    isLocating: _isLocating,
+                    onSelected: _handleSortSelected,
+                  ),
+                ),
+                if (filteredDorms.isEmpty)
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 60),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.search_off,
+                            size: 80,
+                            color: Colors.grey.shade300,
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 16),
+                          Text(
+                            'ไม่พบหอพักที่ตรงกับเงื่อนไข',
+                            style: TextStyle(
+                              color: Colors.grey.shade500,
+                              fontSize: 18,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                else
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 8,
+                    ),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                        final dorm = filteredDorms[index];
+                        return DormCard(
+                          dorm: dorm,
+                          priceDisplay: _getPriceRangeDisplay(dorm),
+                          onTap: () => context.push('/dorm/${dorm.id}'),
+                        );
+                      }, childCount: filteredDorms.length),
                     ),
                   ),
-                )
-              else
-                SliverPadding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 8,
-                  ),
-                  sliver: SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      final dorm = filteredDorms[index];
-                      return DormCard(
-                        dorm: dorm,
-                        priceDisplay: _getPriceRangeDisplay(dorm),
-                        onTap: () => context.push('/dorm/${dorm.id}'),
-                      );
-                    }, childCount: filteredDorms.length),
-                  ),
-                ),
-              const SliverToBoxAdapter(child: SizedBox(height: 40)),
-            ],
+                const SliverToBoxAdapter(child: SizedBox(height: 40)),
+              ],
+            ),
           );
         },
       ),

@@ -41,9 +41,8 @@ class RoomTypeDetailScreen extends ConsumerWidget {
     final roomAsyncValue = ref.watch(roomTypeDetailProvider(roomId));
 
     return roomAsyncValue.when(
-      loading: () => const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      ),
+      loading: () =>
+          const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (err, stack) => Scaffold(
         appBar: AppBar(title: const Text('รายละเอียดห้องพัก')),
         body: Center(
@@ -52,7 +51,11 @@ class RoomTypeDetailScreen extends ConsumerWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.error_outline, size: 56, color: Colors.redAccent),
+                const Icon(
+                  Icons.error_outline,
+                  size: 56,
+                  color: Colors.redAccent,
+                ),
                 const SizedBox(height: 16),
                 Text(
                   'เกิดข้อผิดพลาด: $err',
@@ -77,41 +80,48 @@ class RoomTypeDetailScreen extends ConsumerWidget {
             remainingRooms: room.remainingRooms,
             room: room,
           ),
-          body: CustomScrollView(
-            slivers: [
-              ImageSliverAppBar(
-                images: imageUrls,
-                placeholderIcon: Icons.meeting_room,
-              ),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      RoomHeaderSection(
-                        dormName: room.dormName,
-                        roomName: room.name,
-                        isAvailable: isAvailable,
-                      ),
-                      const _SectionGap(),
-                      RoomInfoSection(
-                        price: room.price,
-                        totalRooms: room.totalRooms,
-                        remainingRooms: room.remainingRooms,
-                        isAvailable: isAvailable,
-                      ),
-                      const _SectionGap(),
-                      FacilitiesSection(
-                        title: 'สิ่งอำนวยความสะดวก (ภายในห้อง)',
-                        facilities: room.facilities,
-                        customFacilities: room.customFacilities,
-                      ),
-                    ],
+          body: RefreshIndicator(
+            onRefresh: () async {
+              ref.invalidate(roomTypeDetailProvider(roomId));
+              await ref.read(roomTypeDetailProvider(roomId).future);
+            },
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: [
+                ImageSliverAppBar(
+                  images: imageUrls,
+                  placeholderIcon: Icons.meeting_room,
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        RoomHeaderSection(
+                          dormName: room.dormName,
+                          roomName: room.name,
+                          isAvailable: isAvailable,
+                        ),
+                        const _SectionGap(),
+                        RoomInfoSection(
+                          price: room.price,
+                          totalRooms: room.totalRooms,
+                          remainingRooms: room.remainingRooms,
+                          isAvailable: isAvailable,
+                        ),
+                        const _SectionGap(),
+                        FacilitiesSection(
+                          title: 'สิ่งอำนวยความสะดวก (ภายในห้อง)',
+                          facilities: room.facilities,
+                          customFacilities: room.customFacilities,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
