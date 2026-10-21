@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: แปลงฟิลด์ JSON string ของ List<String> ที่ backend ส่งมา (เช่น
+// facilities, รูปภาพหอ/ห้อง) ให้เป็น List<String> ใช้งานได้จริงอย่างปลอดภัย ไม่ throw ให้พัง
 import 'dart:convert';
 
 // 🚀 แปลงฟิลด์ที่ Backend เก็บเป็น JSON string ของ List<String> (เช่น Custom_Facilities,

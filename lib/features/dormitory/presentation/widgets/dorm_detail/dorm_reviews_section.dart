@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: ส่วนแสดงรายการรีวิวของหอพักนั้นๆ บนหน้ารายละเอียดหอพัก ดึงข้อมูลผ่าน
+// dormReviewsProvider (เป็น widget ย่อยที่ dorm_detail_screen.dart เรียกใช้)
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:find_dorm_mate/core/widgets/section_title.dart';

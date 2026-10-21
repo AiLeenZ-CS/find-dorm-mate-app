@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: หน้าฟอร์ม "ลงประกาศหอพักใหม่" ฝั่งเจ้าของหอ (owner) — กรอกข้อมูลหอพัก,
+// อัปโหลดรูปภาพ/เอกสารยืนยันความเป็นเจ้าของ, ปักหมุดแผนที่ แล้วส่งให้แอดมินตรวจสอบก่อนเผยแพร่
 import 'dart:convert';
 import 'dart:io';
 import 'package:find_dorm_mate/core/services/storage_service.dart';

@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: หน้าแชท 1:1 "ก่อนตอบรับคำขอจับคู่" ระหว่างเจ้าของประกาศกับผู้ขอ —
+// แยกจากแชทกลุ่มของคนที่ Matched แล้ว ใช้คุยสำรวจนิสัยกันก่อนเจ้าของประกาศตัดสินใจ
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';

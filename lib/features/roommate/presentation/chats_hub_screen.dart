@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: หน้า "แชทของฉัน" (ศูนย์กลางแชททุกแบบของฟีเจอร์หารูมเมท) แยก 2 แท็บ —
+// แชทเดี่ยว (ก่อนตอบรับคำขอจับคู่) และแชทกลุ่มของรูมเมทที่จับคู่แล้ว ต้อง login ก่อนเข้าได้
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

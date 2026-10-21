@@ -1,3 +1,6 @@
+// 📄 ไฟล์นี้ทำหน้าที่: จัดการ Push Notification (Firebase Cloud Messaging) ทั้งหมดของแอป
+// ขอ permission, ดึง/ส่ง FCM token ไปเก็บที่ backend, ดักฟังข้อความ และนำทางไปหน้าที่เกี่ยวข้อง
+// เมื่อผู้ใช้กดแจ้งเตือน เรียกใช้จาก main.dart และ AuthRepository
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';

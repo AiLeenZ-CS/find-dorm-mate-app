@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: หน้าฟอร์มแก้ไขข้อมูลหอพักที่มีอยู่แล้ว ฝั่งเจ้าของหอ (owner)
+// รับข้อมูลตั้งต้นจาก router extra หรือโหลดเองจาก API ถ้าไม่มี แล้วอัปเดตผ่าน dormRepository
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';

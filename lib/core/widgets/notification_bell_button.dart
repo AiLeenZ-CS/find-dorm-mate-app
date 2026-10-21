@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: widget ปุ่มกระดิ่งแจ้งเตือน + badge จำนวนที่ยังไม่อ่าน
+// ใส่ใน AppBar หรือลอยทับหน้าจอได้ทุกหน้า เช็ค login ก่อนพาไปหน้าแจ้งเตือนเสมอ
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

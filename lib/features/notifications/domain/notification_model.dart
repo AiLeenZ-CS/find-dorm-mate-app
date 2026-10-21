@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: โมเดลข้อมูลแจ้งเตือนหนึ่งรายการ แปลงจาก JSON ที่ backend ส่งมา
+// ให้ NotificationRepository และหน้า notifications_screen.dart ใช้งานต่อ
 class AppNotification {
   final int id;
   final String type;

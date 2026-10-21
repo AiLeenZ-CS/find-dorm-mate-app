@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: บริการเลือกรูปจากเครื่องและอัปโหลดขึ้น Firebase Storage
+// ใช้ร่วมกันในฟีเจอร์ที่ต้องอัปโหลดรูป เช่น หอพัก/ห้องพัก/โปรไฟล์ผู้ใช้
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';

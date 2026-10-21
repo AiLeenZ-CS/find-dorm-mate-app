@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: widget หน้าจอ placeholder โชว์แทนเนื้อหาจริงเมื่อผู้ใช้ยังไม่ login
+// แต่หลุดเข้ามาถึงหน้าที่ต้อง auth ก่อน เป็นชั้นป้องกันสำรอง (defense-in-depth)
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

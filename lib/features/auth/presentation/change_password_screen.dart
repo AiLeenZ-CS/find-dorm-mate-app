@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: หน้าจอเปลี่ยนรหัสผ่านสำหรับผู้ใช้ที่ล็อกอินอยู่แล้ว (ทั้ง Member และ
+// Owner) เรียกผ่าน AuthRepository.changePassword ซึ่งอ่านตัวตนจาก JWT token เอง
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

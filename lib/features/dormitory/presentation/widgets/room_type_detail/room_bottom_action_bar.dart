@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: แถบปุ่ม CTA ด้านล่างของหน้ารายละเอียดห้องพัก สลับปุ่มตามบทบาทผู้ใช้
+// (เจ้าของหอ: แก้ไขห้อง, สมาชิกทั่วไป: กรอกฟอร์มจองห้องพัก)
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -5,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:find_dorm_mate/core/auth/role_utils.dart';
 import 'package:find_dorm_mate/features/booking/data/booking_repository.dart';
+import 'package:find_dorm_mate/features/dormitory/data/dorm_repository.dart';
 import 'package:find_dorm_mate/features/dormitory/domain/room_type_detail_model.dart';
 
 /// แถบปุ่ม CTA ยึดด้านล่างจอของหน้ารายละเอียดห้องพัก
@@ -66,6 +69,15 @@ class _RoomBottomActionBarState extends ConsumerState<RoomBottomActionBar> {
             noteToOwner: formResult.note,
           );
 
+      // 🚀 จองสำเร็จแล้ว backend ตัด Remaining_Rooms ใน DB จริงแล้ว แต่ provider พวกนี้เป็น
+      // FutureProvider ธรรมดา (ไม่ใช่ .autoDispose) แคชผลลัพธ์เดิมไว้ทั้ง session ถ้าไม่ invalidate
+      // หน้ารายละเอียดห้อง/หอ และหน้า Home จะยังโชว์จำนวนห้องว่างเดิมค้างอยู่ ทั้งที่ฐานข้อมูล
+      // อัปเดตถูกต้องแล้ว (ดูเหมือน "จองแล้วไม่ตัดจำนวนห้องว่าง" ทั้งที่จริงๆ ตัดแล้ว)
+      ref.invalidate(roomTypeDetailProvider(widget.roomTypeId));
+      final dormId = widget.room.dormId;
+      if (dormId != null) ref.invalidate(dormDetailProvider(dormId));
+      ref.invalidate(dormListProvider);
+
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -89,8 +101,6 @@ class _RoomBottomActionBarState extends ConsumerState<RoomBottomActionBar> {
     }
   }
 
-  // 🚀 เก็บวันที่คาดว่าจะเข้าอยู่ (บังคับ) + หมายเหตุถึงเจ้าของหอ (ไม่บังคับ) ก่อนสร้างใบจอง
-  // จริง ให้เจ้าของหอเห็นข้อมูลนี้ตอนพิจารณาอนุมัติที่หน้า "การจองทั้งหมด"
   Future<_BookingFormResult?> _showBookingFormSheet() {
     return showModalBottomSheet<_BookingFormResult>(
       context: context,
@@ -142,7 +152,9 @@ class _RoomBottomActionBarState extends ConsumerState<RoomBottomActionBar> {
           if (dormId == null) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: Text('ไม่พบข้อมูลหอพักของห้องนี้ ลองรีเฟรชหน้าใหม่อีกครั้ง'),
+                content: Text(
+                  'ไม่พบข้อมูลหอพักของห้องนี้ ลองรีเฟรชหน้าใหม่อีกครั้ง',
+                ),
               ),
             );
             return;

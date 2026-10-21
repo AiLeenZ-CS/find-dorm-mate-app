@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: กำหนดเส้นทาง (routes) ทั้งหมดของแอปด้วย go_router เป็นจุดศูนย์กลาง
+// การนำทางระหว่างหน้าจอทุกหน้า ทั้งฝั่งสมาชิกและเจ้าของหอ
 import 'package:find_dorm_mate/core/router/role_wrapper.dart';
 import 'package:find_dorm_mate/features/auth/presentation/change_password_screen.dart';
 import 'package:find_dorm_mate/features/auth/presentation/forgot_password_screen.dart';
@@ -45,7 +47,6 @@ final appRouter = GoRouter(
       builder: (context, state) => const CompleteProfileScreen(),
     ),
 
-    // ✅ นายสถานี: คอยเช็คสิทธิ์
     // - ถ้าไม่ได้ล็อกอิน (Guest) หรือเป็นผู้ใช้ทั่วไป -> โชว์หน้า MainScreen (หน้า Home ปกติ)
     // - ถ้าล็อกอินแล้วเป็นเจ้าของหอ (Owner) -> โชว์หน้า OwnerDashboardScreen
     GoRoute(path: '/home', builder: (context, state) => const RoleWrapper()),

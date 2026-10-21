@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: แถบแสดงจำนวนผลลัพธ์ + ปุ่มเปิด bottom sheet เลือกวิธีเรียงลำดับหอพัก
+// บนหน้า Home (เป็น widget ย่อยที่ home_screen.dart เรียกใช้)
 import 'package:flutter/material.dart';
 import 'home_sort_option.dart';
 

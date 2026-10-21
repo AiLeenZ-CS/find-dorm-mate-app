@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: โครงหน้าหลัก (shell) ฝั่งเจ้าของหอ (owner) คุม bottom navigation
+// สลับระหว่าง 3 แท็บ — หอพักของฉัน, การจอง, โปรไฟล์ — คู่กับ main screen ของสมาชิกทั่วไป
 import 'package:flutter/material.dart';
 import 'package:find_dorm_mate/core/widgets/app_bottom_nav_bar.dart';
 import 'package:find_dorm_mate/features/owner/presentation/owner_dashboard_screen.dart';

@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: หน้า Feed หลักของฟีเจอร์หารูมเมท — แสดงรายการประกาศที่กำลังเปิดหา
+// รองรับกรอง/เรียงลำดับ (ใกล้ฉัน/ราคา/ใหม่สุด) และเป็นจุดเริ่มสร้างประกาศใหม่จากหอพักที่เลือก
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';

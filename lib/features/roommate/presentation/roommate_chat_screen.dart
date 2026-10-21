@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: หน้าแชทกลุ่มของรูมเมทที่จับคู่กันแล้ว (เจ้าของประกาศ + สมาชิกที่ Matched
+// ทุกคน) ส่งและแสดงข้อความแบบเรียลไทม์ผ่าน roommate_chat_repository (Firestore)
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';

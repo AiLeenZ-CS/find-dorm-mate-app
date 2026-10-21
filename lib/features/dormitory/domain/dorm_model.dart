@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: โมเดลข้อมูล "หอพัก" แบบย่อ ใช้แสดงในหน้า Home (รายการ/ค้นหา/กรอง) และแผนที่
+// เก็บข้อมูลสรุปที่พอใช้แสดงการ์ด/หมุด โดยไม่ต้องดึงรายละเอียดเต็มแบบ DormDetailModel
 import 'package:find_dorm_mate/core/utils/json_list_parser.dart';
 
 class DormModel {

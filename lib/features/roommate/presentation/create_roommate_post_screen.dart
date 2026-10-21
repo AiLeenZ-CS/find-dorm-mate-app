@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: หน้าฟอร์มสร้างประกาศหารูมเมทใหม่ และใช้ซ้ำเป็นหน้าแก้ไขประกาศเดิมด้วย
+// (โหมดแก้ไขเมื่อมี existingPost) — เก็บเงื่อนไขรูมเมทที่ต้องการแล้วเรียก roommate_repository
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

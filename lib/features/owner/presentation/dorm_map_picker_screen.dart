@@ -1,3 +1,6 @@
+// 📄 ไฟล์นี้ทำหน้าที่: หน้าแผนที่สำหรับให้เจ้าของหอ (owner) แตะเลือกตำแหน่งพิกัดหอพัก
+// ใช้ร่วมกันทั้งตอนเพิ่มหอใหม่ (add_dormitory_screen) และแก้ไขหอเดิม (edit_dorm_screen)
+// เมื่อยืนยันพิกัดแล้วจะ pop กลับไปพร้อมค่า LatLng ที่เลือก
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 

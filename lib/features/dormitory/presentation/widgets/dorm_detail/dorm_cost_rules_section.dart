@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: ส่วนแสดงค่ามัดจำ/ค่าประกัน/กฎเลี้ยงสัตว์-สูบบุหรี่ บนหน้ารายละเอียดหอพัก
+// (เป็น widget ย่อยที่ dorm_detail_screen.dart เรียกใช้)
 import 'package:flutter/material.dart';
 import 'package:find_dorm_mate/core/widgets/section_title.dart';
 import 'package:find_dorm_mate/core/widgets/soft_card.dart';

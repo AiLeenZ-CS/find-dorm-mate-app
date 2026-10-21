@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: หน้า "คำขอจับคู่" ฝั่งเจ้าของประกาศ — ดูโปรไฟล์ผู้ขอ ทักแชทก่อนตัดสินใจ
+// อนุมัติ/ปฏิเสธคำขอ หรือยกเลิกการจับคู่ (Unmatch) กับคนที่จับคู่ไปแล้ว
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

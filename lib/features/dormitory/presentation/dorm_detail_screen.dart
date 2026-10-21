@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: หน้าจอรายละเอียดหอพัก (ฝั่งผู้ใช้ทั่วไป) แสดงรูป/ข้อมูล/ค่าใช้จ่าย/ประเภทห้อง/รีวิว
+// ของหอพักหนึ่งหอ โดยประกอบจาก widgets ย่อยใน widgets/dorm_detail/ และดึงข้อมูลผ่าน dormDetailProvider
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

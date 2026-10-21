@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: หน้าหลักของผู้ใช้ทั่วไป/สมาชิก (ไม่ใช่เจ้าของหอ) ครอบ 3 แท็บหลัก
+// (หาหอพัก/รูมเมท/โปรไฟล์) ด้วย bottom navigation bar เรียกใช้จาก RoleWrapper
 import 'package:find_dorm_mate/features/roommate/presentation/roommate_feed_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:find_dorm_mate/core/widgets/app_bottom_nav_bar.dart';
@@ -20,7 +22,7 @@ class _MainScreenState extends State<MainScreen> {
   // อัปเดตรายการหน้าจอที่จะสลับ
   final List<Widget> _screens = const [
     HomeScreen(),
-    RoommateFeedScreen(), // ✅ เปลี่ยนจากหน้าแผนที่เป็นหน้ารูมเมท
+    RoommateFeedScreen(),
     ProfileScreen(),
   ];
 
@@ -42,7 +44,6 @@ class _MainScreenState extends State<MainScreen> {
             selectedIcon: Icon(Icons.home, color: Colors.deepPurple),
             label: 'หาหอพัก',
           ),
-          // ✅ เปลี่ยนไอคอนและชื่อปุ่มที่นี่
           NavigationDestination(
             icon: Icon(Icons.group_outlined),
             selectedIcon: Icon(Icons.group, color: Colors.deepPurple),

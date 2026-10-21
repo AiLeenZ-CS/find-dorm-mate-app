@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: Data class เก็บค่าตัวกรองของหน้า Feed รูมเมท ส่งผ่านเข้า/ออกระหว่าง
+// roommate_feed_screen และ roommate_filter_sheet
 import 'package:flutter/material.dart';
 
 /// รวมค่าตัวกรองทั้งหมดของหน้า Feed รูมเมท — กรองจากข้อมูลที่ผู้ประกาศระบุไว้ในประกาศเอง

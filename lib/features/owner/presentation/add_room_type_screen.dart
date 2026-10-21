@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: หน้าฟอร์มจัดการ "ประเภทห้องพัก" ฝั่งเจ้าของหอ (owner) ใช้ได้สองโหมดในหน้าเดียว
+// — โหมดเพิ่มห้องใหม่ (ไม่ส่ง existingRoom) และโหมดแก้ไขห้องเดิม (ส่ง existingRoom มาเติมฟอร์ม)
 import 'dart:io';
 import 'dart:convert';
 import 'package:find_dorm_mate/core/services/storage_service.dart';

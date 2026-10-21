@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: หน้ากรอกอีเมลเพื่อขอลิงก์รีเซ็ตรหัสผ่าน (ใช้ก่อนล็อกอิน สำหรับทั้ง
+// Member และ Owner) เรียก AuthRepository.forgotPassword แล้วให้ backend ส่งลิงก์ไปที่อีเมล
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/auth_repository.dart';

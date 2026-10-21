@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: แถบปุ่ม CTA ด้านล่างของหน้ารายละเอียดหอพัก สลับปุ่มตามบทบาทผู้ใช้
+// (เจ้าของหอ: แก้ไข/เพิ่มห้อง, สมาชิกทั่วไป: หารูมเมท/ดูข้อมูลติดต่อเจ้าของหอ)
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

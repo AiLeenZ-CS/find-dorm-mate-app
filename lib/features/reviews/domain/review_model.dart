@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: โมเดลข้อมูลรีวิวหอพักหนึ่งรายการ (คะแนน/คอมเมนต์/ผู้รีวิว) แปลงจาก
+// JSON ที่ backend ส่งมา ให้ ReviewRepository และหน้าแสดงรีวิวใช้งานต่อ
 class ReviewModel {
   final int id;
   final int? rating;

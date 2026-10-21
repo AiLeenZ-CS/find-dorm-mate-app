@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: สร้าง Dio instance กลางของทั้งแอป ใช้เป็น HTTP client หลักในการเรียก
+// backend API ทุกจุด พร้อมแนบ JWT token ให้ทุก request โดยอัตโนมัติ
 import 'package:dio/dio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

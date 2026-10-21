@@ -1,3 +1,6 @@
+// 📄 ไฟล์นี้ทำหน้าที่: Repository หลักของฟีเจอร์หารูมเมท — เรียก REST API (Node.js backend)
+// สำหรับสร้าง/แก้ไข/ลบประกาศ, ส่ง-อนุมัติ-ยกเลิกคำขอจับคู่, และดึงประกาศของฉัน/ที่จับคู่แล้ว
+// รวม Riverpod providers ที่หน้าจอต่างๆ ในฟีเจอร์นี้เรียกใช้
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:find_dorm_mate/core/config/api_config.dart';

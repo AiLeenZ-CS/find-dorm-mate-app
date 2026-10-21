@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: widget แถวข้อมูล icon + label + value มาตรฐาน
+// ใช้ในการ์ดสรุปข้อมูลทั่วทั้งแอป
 import 'package:flutter/material.dart';
 
 /// แถวข้อมูล icon + label + value มาตรฐาน ใช้ในการ์ดสรุปข้อมูลทั่วทั้งแอป

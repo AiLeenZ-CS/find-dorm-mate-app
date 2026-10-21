@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: โมเดลข้อมูล "รายละเอียดห้องพัก" แบบเต็ม (ราคา, จำนวนห้อง, สิ่งอำนวยความสะดวก,
+// ชื่อหอที่ห้องนี้สังกัด) ใช้แปลง JSON จาก backend สำหรับหน้า RoomTypeDetailScreen โดยเฉพาะ
 import 'package:find_dorm_mate/core/utils/json_list_parser.dart';
 
 class RoomTypeDetailModel {

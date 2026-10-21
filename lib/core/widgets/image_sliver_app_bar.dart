@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: widget SliverAppBar แสดงรูปภาพแบบ carousel ที่ยืดหดได้ตอนเลื่อนจอ
+// ใช้เป็นส่วนหัวของหน้ารายละเอียดที่มีรูปภาพเป็นพระเอก (เช่น หอพัก/ห้องพัก)
 import 'package:flutter/material.dart';
 
 /// SliverAppBar แสดงรูปภาพแบบ carousel ที่ยืดหด (collapse) ได้ตอนเลื่อนจอ

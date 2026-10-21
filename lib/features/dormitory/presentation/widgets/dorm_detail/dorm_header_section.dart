@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: ส่วนหัวของหน้ารายละเอียดหอพัก (ชื่อ/ประเภทหอ/คะแนนรีวิว/ที่อยู่/ปุ่มเปิดแผนที่)
+// เป็น widget ย่อยที่ dorm_detail_screen.dart เรียกใช้
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:find_dorm_mate/features/dormitory/domain/dorm_detail_model.dart';

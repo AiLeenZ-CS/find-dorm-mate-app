@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: หน้าหลัก "หอพักของฉัน" ฝั่งเจ้าของหอ (owner) — แสดงรายการหอพักทั้งหมดที่
+// เจ้าของคนนี้ลงประกาศไว้ พร้อมสถานะอนุมัติจากแอดมิน และปุ่มไปเพิ่ม/จัดการหอพักแต่ละแห่ง
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

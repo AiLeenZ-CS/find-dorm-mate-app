@@ -1,3 +1,6 @@
+// 📄 ไฟล์นี้ทำหน้าที่: หน้ากรอกข้อมูลส่วนตัวให้ครบหลังล็อกอินด้วย Google ครั้งแรก (ผู้ใช้ใหม่
+// ที่ยังไม่มีบัญชี หรือ Member เดิมที่ข้อมูลยังไม่ครบ) ให้เลือก role Member/Owner แล้วส่งต่อให้
+// AuthRepository.completeProfile สร้าง/อัปเดตบัญชีจริง
 import 'dart:io';
 import 'package:find_dorm_mate/core/services/storage_service.dart';
 import 'package:flutter/material.dart';

@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: Repository ห้องแชทกลุ่มของรูมเมทที่จับคู่กันแล้ว (Matched) เชื่อมกับ
+// Firestore collection "roommate_chats" ส่งและสตรีมข้อความแบบเรียลไทม์ให้หน้า roommate_chat_screen
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

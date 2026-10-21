@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: เก็บค่า config กลางของแอป (base URL ของ backend API) ไว้ที่เดียว
+// ให้ ApiClient และ repository/service ทุกจุดเรียกใช้ร่วมกัน
 // 🚀 Base URL เดียวที่ใช้ทั้งแอป (ก่อนหน้านี้ hardcode ซ้ำกันอยู่ 6 จุดในหลาย repository)
 // ⚠️ ค่า default 10.0.2.2 คือ loopback alias ของ Android Emulator เท่านั้น ใช้ไม่ได้กับ
 // iOS Simulator/เครื่องจริง/เว็บ หรือ production — ตอน build จริงให้ส่ง URL ของ backend จริง

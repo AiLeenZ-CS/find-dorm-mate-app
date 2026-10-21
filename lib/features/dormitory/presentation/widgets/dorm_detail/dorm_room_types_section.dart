@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: ส่วนแสดงรายการประเภทห้องพักของหอพักนั้นๆ บนหน้ารายละเอียดหอพัก กดแต่ละใบ
+// เพื่อไปหน้ารายละเอียดห้อง (เป็น widget ย่อยที่ dorm_detail_screen.dart เรียกใช้)
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:find_dorm_mate/features/dormitory/domain/dorm_detail_model.dart';

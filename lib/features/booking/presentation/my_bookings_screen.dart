@@ -1,9 +1,12 @@
+// 📄 ไฟล์นี้ทำหน้าที่: หน้า "การจองของฉัน" ฝั่งสมาชิก/ผู้เช่า (ไม่ใช่เจ้าของหอ) — แสดงใบจอง
+// ทุกสถานะของผู้ใช้คนนี้ ยกเลิกใบจอง Pending, เขียนรีวิว, และไปสร้าง/ดูประกาศหารูมเมท
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../data/booking_repository.dart';
+import 'package:find_dorm_mate/features/dormitory/data/dorm_repository.dart';
 import 'package:find_dorm_mate/features/roommate/data/roommate_repository.dart';
 import 'package:find_dorm_mate/features/roommate/domain/roommate_post_model.dart';
 import 'package:find_dorm_mate/features/reviews/data/review_repository.dart';
@@ -44,7 +47,11 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen> {
     }
   }
 
-  Future<void> _confirmCancel(int bookingId) async {
+  Future<void> _confirmCancel(
+    int bookingId, {
+    int? roomTypeId,
+    int? dormId,
+  }) async {
     final confirm = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -81,6 +88,12 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen> {
           ),
         );
         ref.invalidate(myBookingsProvider);
+        // 🚀 ยกเลิกแล้ว backend คืนสต๊อกห้อง (Remaining_Rooms +1) ใน DB จริงแล้ว เหมือนตอนจอง
+        // ต้อง invalidate provider ของหน้ารายละเอียดห้อง/หอ/Home ด้วย ไม่งั้นจะยังโชว์จำนวน
+        // ห้องว่างเดิม (ค้างน้อยกว่าความจริง) จนกว่าจะปิดเปิดแอปใหม่
+        if (roomTypeId != null) ref.invalidate(roomTypeDetailProvider(roomTypeId));
+        if (dormId != null) ref.invalidate(dormDetailProvider(dormId));
+        ref.invalidate(dormListProvider);
       } catch (e) {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
@@ -533,7 +546,11 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen> {
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton(
-                      onPressed: () => _confirmCancel(booking['Booking_ID']),
+                      onPressed: () => _confirmCancel(
+                        booking['Booking_ID'],
+                        roomTypeId: roomType['Room_Type_ID'],
+                        dormId: dorm['Dorm_ID'],
+                      ),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.red.shade600,
                         side: BorderSide(color: Colors.red.shade400, width: 1.5),

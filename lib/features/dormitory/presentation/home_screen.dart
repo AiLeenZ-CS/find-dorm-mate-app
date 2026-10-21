@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: หน้าหลักของแอปฝั่งผู้ใช้ สำหรับค้นหา/กรอง/เรียงลำดับรายการหอพักทั้งหมด
+// ประกอบจาก widgets ย่อยใน widgets/home/ (ช่องค้นหา, ตัวกรอง, การ์ดหอพัก, แถบเรียงลำดับ)
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';

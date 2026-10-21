@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: โมเดลเก็บค่าตัวกรองทั้งหมดของหน้า Home ส่งผ่านระหว่าง home_screen.dart
+// กับ home_filter_sheet.dart
 import 'package:flutter/material.dart';
 
 /// รวมค่าตัวกรองทั้งหมดของหน้า Home ไว้ในที่เดียว ส่งผ่านเข้า/ออกจาก HomeFilterSheet

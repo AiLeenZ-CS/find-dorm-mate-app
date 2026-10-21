@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: หน้าตั้งรหัสผ่านใหม่ หลังผู้ใช้กดลิงก์จากอีเมล "ลืมรหัสผ่าน" (รับ id
+// และ token มาจาก deep link) ส่งให้ AuthRepository.resetPassword ยืนยันและบันทึกรหัสใหม่
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: Repository ติดต่อ API ของฝั่ง "หอพัก" ทั้งหมด (ดึงรายการหอพัก, รายละเอียดหอ/ห้อง,
+// สร้าง/แก้ไขหอพักและห้องพัก) พร้อม Riverpod provider ให้หน้าจอต่างๆ (Home, รายละเอียดหอ/ห้อง, ฝั่งเจ้าของหอ) เรียกใช้
 import 'package:dio/dio.dart';
 import 'package:find_dorm_mate/features/dormitory/domain/room_type_detail_model.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

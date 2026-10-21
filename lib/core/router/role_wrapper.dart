@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: ตัดสินใจว่าจะโชว์หน้าแรกไหนตาม role ของผู้ใช้ที่ login ไว้
+// (เจ้าของหอ -> OwnerMainScreen, อื่นๆ/Guest -> MainScreen) เรียกใช้จาก route '/home'
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../core/presentation/main_screen.dart';

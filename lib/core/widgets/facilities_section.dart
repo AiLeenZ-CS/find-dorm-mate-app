@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: widget แสดงรายการสิ่งอำนวยความสะดวกเป็น Chip (ทั้งแบบ master
+// ที่เลือกจากระบบ และ custom ที่พิมพ์เพิ่มเอง) ใช้ร่วมกันทั้งหน้าหอพักและห้องพัก
 import 'package:flutter/material.dart';
 import 'section_title.dart';
 

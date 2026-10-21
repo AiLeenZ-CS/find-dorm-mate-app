@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: หน้าเข้าสู่ระบบด้วยอีเมล/รหัสผ่าน หรือ Google (สำหรับทั้ง Member และ
+// Owner) หลังล็อกอินสำเร็จจะแยกเส้นทางไปหน้าแรกตาม role ที่ backend ส่งกลับมา
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

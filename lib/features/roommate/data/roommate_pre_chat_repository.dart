@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: Repository ห้องแชท 1:1 "ก่อนตอบรับคำขอจับคู่" ระหว่างเจ้าของประกาศกับ
+// ผู้ขอ เชื่อมกับ Firestore collection "roommate_pre_chats" ใช้คู่กับหน้า roommate_pre_chat_screen
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'roommate_chat_repository.dart' show ChatMessage;

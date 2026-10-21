@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: ชั้น repository ของระบบแจ้งเตือนในแอป (in-app notification) ดึงรายการ/
+// จำนวนที่ยังไม่อ่าน และมาร์กอ่านแล้ว ใช้ร่วมกันทั้ง Member และ Owner ผ่าน provider ด้านล่าง
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:find_dorm_mate/core/config/api_config.dart';

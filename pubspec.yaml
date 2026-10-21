@@ -2,7 +2,7 @@ name: find_dorm_mate
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -62,21 +62,38 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^5.0.0
 
+  # 🚀 สร้างไอคอนแอปทุกแพลตฟอร์ม (Android/iOS) จากรูปต้นฉบับเดียว — ดู config
+  # "flutter_launcher_icons:" ด้านล่าง แล้วรัน `dart run flutter_launcher_icons`
+  flutter_launcher_icons: ^0.14.4
+
+# 🚀 ตั้งค่าไอคอนแอป — เอารูป assets/icon/logo.png
+# มาสร้างเป็นไอคอนทุกขนาดที่แต่ละแพลตฟอร์มต้องการให้อัตโนมัติ
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon/logo.png"
+  # 🚀 Android 13+ รองรับไอคอนแบบปรับรูปทรงได้ (adaptive icon) ต้องมีพื้นหลังทึบ
+  # ไม่งั้นขอบรูปโปร่งใสจะโดนตัดแหว่งเวลาระบบปรับเป็นวงกลม/สี่เหลี่ยมมน ฯลฯ
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/icon/logo.png"
+  # 🚀 รูป logo.png มีพื้นหลังโปร่งใส (alpha channel) — App Store ของ Apple ไม่ยอมรับไอคอน
+  # ที่มีความโปร่งใส ต้องลบ alpha ออกตอนสร้างไอคอน iOS (เติมพื้นขาวทึบแทนส่วนที่โปร่งใส)
+  remove_alpha_ios: true
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  # 🚀 รูปโลโก้แอป — ใช้ทั้งสร้างไอคอนแอป (ดู flutter_launcher_icons: ด้านบน)
+  # และเอามาใช้ในแอปเองได้ด้วย (เช่น หน้า splash) ผ่าน Image.asset('assets/icon/logo.png')
+  assets:
+    - assets/icon/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

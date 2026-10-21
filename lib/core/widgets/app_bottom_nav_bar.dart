@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: widget แถบนำทางด้านล่าง (bottom navigation) มาตรฐาน
+// ใช้ร่วมกันทั้งฝั่งสมาชิก (MainScreen) และเจ้าของหอ (OwnerMainScreen)
 import 'package:flutter/material.dart';
 
 /// แถบนำทางด้านล่างมาตรฐานที่ใช้ร่วมกันทั้งแอป (ฝั่งสมาชิกและเจ้าของหอ)

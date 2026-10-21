@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: Data model ของ "ประกาศหารูมเมท" 1 รายการ — แปลง JSON จาก backend เป็น
+// object ที่ UI ใช้ได้ (เงื่อนไขที่ต้องการ + ข้อมูลหอ/ห้อง/เจ้าของประกาศ + สถานะการจับคู่)
 class RoommatePostModel {
   final int postId;
   final int reqPersons;

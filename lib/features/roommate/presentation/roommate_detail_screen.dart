@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: หน้ารายละเอียดประกาศหารูมเมท 1 รายการ — โชว์เงื่อนไข/ข้อมูลเจ้าของ
+// ประกาศ และเปลี่ยนปุ่มด้านล่างตามบทบาท (เจ้าของแก้ไข/ลบ/ดูคำขอ หรือผู้ขอส่ง/ยกเลิกคำขอจับคู่)
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

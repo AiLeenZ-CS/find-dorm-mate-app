@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: ส่วนหัวของหน้า Home (ทักทายผู้ใช้, ช่องค้นหา, ปุ่มแชท/แจ้งเตือน/แผนที่/ตัวกรอง)
+// เป็น widget ย่อยที่ home_screen.dart เรียกใช้
 import 'package:flutter/material.dart';
 import 'package:find_dorm_mate/core/widgets/notification_bell_button.dart';
 

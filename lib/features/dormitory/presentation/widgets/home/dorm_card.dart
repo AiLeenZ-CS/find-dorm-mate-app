@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: การ์ดสรุปข้อมูลหอพักหนึ่งหอ ใช้แสดงในรายการผลลัพธ์ของหน้า Home
+// (เป็น widget ย่อยที่ home_screen.dart เรียกใช้)
 import 'package:flutter/material.dart';
 import 'package:find_dorm_mate/features/dormitory/domain/dorm_model.dart';
 import 'package:find_dorm_mate/features/dormitory/widgets/dorm_image_carousel.dart';

@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: Bottom sheet ตัวกรองของหน้า Feed รูมเมท — ให้ผู้ใช้ตั้งค่า RoommateFilters
+// (เพศ/อายุ/เวลานอน/บุหรี่/สัตว์เลี้ยง/ความสะอาด/มีห้องแล้ว) แล้วส่งค่ากลับให้หน้า Feed
 import 'package:flutter/material.dart';
 import 'roommate_filters.dart';
 

@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: หน้าจอรายละเอียดห้องพัก (ฝั่งผู้ใช้ทั่วไป) แสดงรูป/ราคา/จำนวนห้องว่าง/
+// สิ่งอำนวยความสะดวกของห้องพักหนึ่งประเภท ประกอบจาก widgets ย่อยใน widgets/room_type_detail/
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: หน้ารวมแจ้งเตือนทั้งหมด ใช้ร่วมกันทั้ง Member และ Owner (แยกข้อมูลที่
+// backend ให้แล้ว ฝั่ง UI ไม่ต้องรู้ role) กดเพื่ออ่านและนำทางต่อไปตาม link ของแจ้งเตือนนั้น
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

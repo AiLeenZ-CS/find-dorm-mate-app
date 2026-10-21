@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: ชั้น repository ของระบบรีวิวหอพัก (สร้าง/แก้ไข/ลบรีวิว และดึงรีวิว
+// พร้อมคะแนนเฉลี่ยของหอพักหนึ่งๆ) ใช้โดย Member ที่เคยจองหอนั้นแล้ว และหน้ารายละเอียดหอพัก
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:find_dorm_mate/core/config/api_config.dart';

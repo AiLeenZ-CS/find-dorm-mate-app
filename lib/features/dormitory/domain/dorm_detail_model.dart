@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: โมเดลข้อมูล "รายละเอียดหอพัก" แบบเต็ม (ราคา, มัดจำ, กฎ, สิ่งอำนวยความสะดวก,
+// รีวิว, ประเภทห้องย่อย) ใช้แปลง JSON จาก backend สำหรับหน้า DormDetailScreen โดยเฉพาะ
 import 'package:find_dorm_mate/core/utils/json_list_parser.dart';
 
 class DormDetailModel {

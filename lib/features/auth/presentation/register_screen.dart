@@ -1,3 +1,6 @@
+// 📄 ไฟล์นี้ทำหน้าที่: หน้าสมัครสมาชิกใหม่ด้วยอีเมล/รหัสผ่าน ให้เลือก role Member หรือ Owner
+// ซึ่งจะปรับฟอร์มและฟิลด์ที่ต้องกรอก (เช่น บัตรประชาชนสำหรับ Owner) ตามที่เลือก ก่อนส่งให้
+// AuthRepository.register สร้างบัญชี
 import 'dart:io';
 import 'package:find_dorm_mate/core/services/storage_service.dart';
 import 'package:flutter/material.dart';

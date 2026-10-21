@@ -6,7 +6,7 @@
          ก่อนถึงจะโชว์ notification บนแถบระบบได้ (ดู PushNotificationService.requestPermission) -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <application
-        android:label="find_dorm_mate"
+        android:label="Find a Dorm Mate"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -29,6 +29,13 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- แยก intent-filter ของ deep link (finddormmate://) ออกจาก filter ของ launcher icon
+                 ด้านบน — ถ้ารวมกันไว้ filter เดียว ระบบจะมองว่าทั้ง filter ต้องมี data scheme
+                 ด้วยเสมอ ทำให้ query ของ launcher (MAIN+LAUNCHER แบบไม่มี scheme) ไม่ match เลย
+                 และไอคอนแอปจะไม่โชว์ใน app drawer (แต่ adb am start แบบระบุ component ตรงๆ ยังเปิดได้
+                 เพราะไม่ผ่านการ resolve intent-filter) -->
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />

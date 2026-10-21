@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: widget แสดงรูปภาพหอพัก/ห้องพักแบบเลื่อนดูได้หลายรูป (parse string รูปจาก DB)
+// ใช้ร่วมกันหลายที่ เช่น dorm_card.dart ในหน้า Home
 import 'dart:convert';
 import 'package:flutter/material.dart';
 

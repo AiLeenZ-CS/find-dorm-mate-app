@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: แท็บโปรไฟล์หลัก แสดงข้อมูลผู้ใช้ปัจจุบัน (Member/Owner) หรือหน้าชวน
+// ล็อกอินถ้าเป็น Guest เป็นจุดทางเข้าไปหน้าแก้ไขโปรไฟล์/เปลี่ยนรหัสผ่าน/ออกจากระบบ
 import 'package:find_dorm_mate/features/auth/data/auth_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

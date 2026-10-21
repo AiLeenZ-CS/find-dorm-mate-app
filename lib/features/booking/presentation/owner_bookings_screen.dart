@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: หน้า "การจองทั้งหมด" ฝั่งเจ้าของหอ (owner) — แสดงใบจองที่เข้ามาทุกหอ
+// ของเจ้าของคนนี้ กรองตามสถานะ และมีปุ่มอนุมัติ/ปฏิเสธ/รายงานผู้จองสำหรับใบจอง Pending/Confirmed
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/booking_repository.dart';

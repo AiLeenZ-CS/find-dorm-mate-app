@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: ส่วนแสดงราคา/จำนวนห้องทั้งหมด/ห้องว่างขณะนี้ บนหน้ารายละเอียดห้องพัก
+// (เป็น widget ย่อยที่ room_type_detail_screen.dart เรียกใช้)
 import 'package:flutter/material.dart';
 import 'package:find_dorm_mate/core/widgets/section_title.dart';
 import 'package:find_dorm_mate/core/widgets/soft_card.dart';

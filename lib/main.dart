@@ -1,3 +1,6 @@
+// 📄 ไฟล์นี้ทำหน้าที่: จุดเริ่มต้น (entry point) ของแอปฝั่งผู้ใช้/เจ้าของหอ — เซ็ตอัป Firebase,
+// ผูก session เดิม (ถ้ามี), เริ่มระบบ push notification, แล้วสร้าง MaterialApp.router หลักที่ครอบ
+// ทั้งแอปด้วย ProviderScope (Riverpod) และ appRouter (go_router)
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';

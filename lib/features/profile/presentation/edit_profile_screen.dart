@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: หน้าแก้ไขข้อมูลส่วนตัว ใช้ร่วมกันทั้ง Member และ Owner โดยรับข้อมูล
+// ผู้ใช้ปัจจุบันมาจาก ProfileScreen ผ่าน router extra แล้วส่งต่อให้ AuthRepository.updateProfile
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

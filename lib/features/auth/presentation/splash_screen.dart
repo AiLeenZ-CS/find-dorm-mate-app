@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: หน้าจอเริ่มต้นแอป (splash) โชว์โลโก้สั้นๆ แล้วเด้งไปที่ /home เสมอ
+// ปล่อยให้ RoleWrapper เป็นคนคัดแยก Guest/Member/Owner อีกที ไม่ตัดสินใจเองที่นี่
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: หน้า "รูมเมทของฉัน" — รวมประกาศของฉัน, ประวัติคำขอจับคู่ที่ฉันเกี่ยวข้อง,
+// และประกาศที่จับคู่ได้รูมเมทแล้วพร้อมกดส่งคำขอจองห้อง (3 แท็บ)
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

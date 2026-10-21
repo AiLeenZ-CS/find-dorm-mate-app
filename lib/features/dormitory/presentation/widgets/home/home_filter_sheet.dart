@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: bottom sheet ตัวกรองหอพักของหน้า Home (ประเภทหอ/ห้อง, ช่วงราคา, คะแนนรีวิว,
+// สิ่งอำนวยความสะดวก) ส่งค่า HomeFilters กลับไปให้ home_screen.dart ใช้กรองรายการหอพัก
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../data/dorm_repository.dart';

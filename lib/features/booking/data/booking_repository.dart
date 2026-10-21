@@ -1,3 +1,5 @@
+// 📄 ไฟล์นี้ทำหน้าที่: Repository และ Riverpod providers สำหรับระบบการจองห้องพัก — เรียก API
+// ใช้ร่วมกันทั้งฝั่งสมาชิก (จอง/ยกเลิก/ดูใบจองตัวเอง) และฝั่งเจ้าของหอ (ดู/อนุมัติ/ปฏิเสธ/รายงาน)
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:find_dorm_mate/core/config/api_config.dart';

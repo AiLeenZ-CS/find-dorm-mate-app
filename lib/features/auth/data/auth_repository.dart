@@ -1,3 +1,6 @@
+// 📄 ไฟล์นี้ทำหน้าที่: ชั้น repository ของระบบยืนยันตัวตนทั้งหมด (login, register, Google
+// sign-in, ลืม/เปลี่ยนรหัสผ่าน, กรอกโปรไฟล์ให้ครบ, ผูก session กับ Firebase Auth)
+// หน้าจอในโฟลเดอร์ presentation ทุกหน้าเรียกผ่าน authRepositoryProvider เพื่อคุยกับ backend
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -118,16 +121,11 @@ class AuthRepository {
   }
 
   Future<void> logout() async {
-    // 🆕 ลบ FCM Token ของเครื่องนี้ออกจาก backend ก่อนเคลียร์ session — กันไม่ให้บัญชีที่
-    // เพิ่ง logout ไปยังได้รับ push ของเครื่องนี้อยู่ (ต้องทำก่อน prefs.clear() เพราะ
-    // ApiClient ต้องใช้ jwt_token เดิมแนบไปยืนยันตัวตนตอนเรียก endpoint ลบ token)
     await PushNotificationService.instance.unregisterToken();
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
 
-    // 🚀 ออกจาก Firebase session ที่ผูกกับ Member_ID เดิมด้วย แล้วกลับไปเป็น anonymous
-    // เพื่อให้ฟีเจอร์ที่ต้องพึ่ง Firebase Auth ตอนยังไม่ login (เช่น ดูรูปจาก Storage) ใช้ได้ต่อ
     try {
       await FirebaseAuth.instance.signOut();
       await FirebaseAuth.instance.signInAnonymously();
@@ -136,12 +134,6 @@ class AuthRepository {
     }
   }
 
-  // 🚀 ผูก Firebase Auth เข้ากับ Member_ID จริง (ใช้กับระบบแชทรูมเมท) — ขอ Custom Token
-  // จาก backend แล้ว sign in แทนที่ Anonymous เดิม ให้ request.auth.uid ฝั่ง Firestore
-  // Security Rules อ้างอิงถึงสมาชิกคนจริงได้ ไม่ใช่ uid สุ่มที่ไม่รู้ว่าเป็นใคร
-  // ไม่ throw ออกไปเด็ดขาด (เรียกจาก _saveSession/ensureFirebaseSession) — ถ้า Firebase
-  // เขียนไม่ผ่าน (เช่น backend ยังไม่ได้ตั้งค่า Admin SDK) ให้ login หลักผ่านได้ตามปกติ
-  // แค่แชทอาจจะยังใช้ไม่ได้ชั่วคราว
   Future<void> _syncFirebaseAuth() async {
     try {
       final response = await _dio.post('$baseUrl/firebase-token');
@@ -155,9 +147,6 @@ class AuthRepository {
     }
   }
 
-  // 🚀 เรียกตอนแอปเปิดขึ้นมา (main.dart) — ถ้ามี session เดิมของ backend อยู่แล้ว (ปิดแอปแล้ว
-  // เปิดใหม่โดยไม่ได้ logout) ให้ผูก Firebase เข้ากับ Member_ID ทันทีโดยไม่ต้อง login ซ้ำ
-  // ถ้ายังไม่เคย login เลย ให้ sign in แบบ anonymous ไปก่อนเหมือนเดิม (guest browsing)
   Future<void> ensureFirebaseSession() async {
     final hasBackendSession = await isLoggedIn();
 
