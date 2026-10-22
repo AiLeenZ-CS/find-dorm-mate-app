@@ -164,6 +164,15 @@ class AuthRepository {
     try {
       await _dio.post('$baseUrl/forgot-password', data: {'email': email});
     } on DioException catch (e) {
+      // 🚀 timeout ไม่มี e.response เลย (ไม่ใช่ error ที่ backend ตอบกลับมา แต่รอจน Dio ตัดการ
+      // เชื่อมต่อเอง) ต้องแยกข้อความเตือนให้ชัดเจนกว่า fallback เดิม เพราะกรณีนี้เคยเกิดจริง
+      // ตอน backend ค้างรอส่งอีเมลผ่าน SMTP นานเกินไป (ดู connectTimeout/receiveTimeout ใน
+      // api_client.dart)
+      if (e.type == DioExceptionType.connectionTimeout ||
+          e.type == DioExceptionType.sendTimeout ||
+          e.type == DioExceptionType.receiveTimeout) {
+        throw Exception('เซิร์ฟเวอร์ใช้เวลานานเกินไป กรุณาลองใหม่อีกครั้งภายหลัง');
+      }
       throw Exception(e.response?.data['message'] ?? 'เกิดข้อผิดพลาด');
     }
   }

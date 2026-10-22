@@ -10,16 +10,19 @@ class DormDetailModel {
   final String? images;
   final double? depositFee;
   final double? insuranceFee;
-  final String? waterRate; // 🚀 เก็บเป็น String เพราะฝั่ง backend/DB เป็นข้อความอิสระ เช่น "เหมา 100/ด"
+  final String?
+  waterRate; // 🚀 เก็บเป็น String เพราะฝั่ง backend/DB เป็นข้อความอิสระ เช่น "เหมา 100/ด"
   final String? electricRate;
   final int? contractDuration; // เดือน
   final bool isPetFriendly;
   final bool isSmokingAllowed;
   final String? contactInfo;
   final String? description; // 🚀 ข้อความแนะนำหอพักแบบยาวที่เจ้าของพิมพ์เอง
-  final List<String> facilities; // Master Facilities (เลือกจาก D5) - ชื่อ ใช้แสดงผล
+  final List<String>
+  facilities; // Master Facilities (เลือกจาก D5) - ชื่อ ใช้แสดงผล
   final List<int> facilityIds; // 🚀 ID เดียวกัน ใช้ pre-select ตอนแก้ไข
-  final List<String> customFacilities; // 🚀 สิ่งอำนวยความสะดวกที่เจ้าของพิมพ์เพิ่มเอง
+  final List<String>
+  customFacilities; // 🚀 สิ่งอำนวยความสะดวกที่เจ้าของพิมพ์เพิ่มเอง
   final List<RoomTypeModel> roomTypes;
   final double? latitude;
   final double? longitude;
@@ -72,9 +75,6 @@ class DormDetailModel {
       waterRate: json['Water_Rate'],
       electricRate: json['Electric_Rate'],
       contractDuration: json['Contract_Duration'],
-      // 🚀 แก้บั๊ก: เดิมอ่าน key 'Pet_Friendly'/'Smoking_Allowed' ที่ไม่มีจริงใน response
-      // (backend ส่งมาเป็น 'Is_Pet_Friendly'/'Is_Smoking_Allowed' แบบ Boolean) ทำให้
-      // หน้าจอแสดง "ไม่อนุญาต" เสมอไม่ว่าค่าจริงจะเป็นอะไร
       isPetFriendly: json['Is_Pet_Friendly'] == true,
       isSmokingAllowed: json['Is_Smoking_Allowed'] == true,
       contactInfo: json['Contact_Info'],
@@ -109,7 +109,7 @@ class DormDetailModel {
 class RoomTypeModel {
   final int id;
   final String? name;
-  final String? type; // 🆕 เพิ่มตัวแปรสำหรับเก็บคำว่า Air / Fan เผื่อใช้งาน
+  final String? type;
   final double? price;
   final int? remaining;
   final String? status;

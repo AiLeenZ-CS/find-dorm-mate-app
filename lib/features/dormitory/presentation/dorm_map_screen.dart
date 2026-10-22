@@ -37,9 +37,6 @@ class _DormMapScreenState extends ConsumerState<DormMapScreen> {
 
   // 🚀 ตัวแปรเช็คว่าเป็น "โหมดดูหอพักเดียว" หรือไม่
   late bool _isSingleView;
-
-  // 🚀 แคชรูปหมุด "ชื่อหอ + ช่วงราคา" ที่วาดขึ้นเองต่อหอ (คีย์ด้วย Dorm_ID)
-  // กันไม่ให้วาดซ้ำทุกครั้งที่ build() เพราะการวาด bitmap มีต้นทุนพอสมควร
   final Map<int, BitmapDescriptor> _dormMarkerIcons = {};
   final Set<int> _generatingMarkerIds = {};
   late final double _devicePixelRatio;
@@ -47,7 +44,6 @@ class _DormMapScreenState extends ConsumerState<DormMapScreen> {
   @override
   void initState() {
     super.initState();
-    // ถ้ามีการส่งพิกัดมา แสดงว่าเป็นโหมดดูหอพักเดียว (จากหน้ารายละเอียด)
     _isSingleView = widget.initialLat != null && widget.initialLng != null;
     _devicePixelRatio =
         WidgetsBinding.instance.platformDispatcher.views.first.devicePixelRatio;
@@ -73,9 +69,7 @@ class _DormMapScreenState extends ConsumerState<DormMapScreen> {
     return '฿$min-$max';
   }
 
-  // 🚀 วาดหมุดแบบ "ป้ายราคา" เอง (ชื่อหอ + ช่วงราคา) แทนหมุดเปล่าๆ ของ Google Maps
-  // เพราะ InfoWindow ของ google_maps_flutter โชว์ได้แค่ตอนแตะเท่านั้น ถ้าอยากให้เห็น
-  // ชื่อ/ราคาตลอดเวลาบนแผนที่ต้องวาด bitmap เองแล้วส่งเป็น marker icon
+  //ป้ายราคา
   Future<BitmapDescriptor> _buildPriceTagIcon({
     required String name,
     required String priceLabel,
@@ -99,8 +93,6 @@ class _DormMapScreenState extends ConsumerState<DormMapScreen> {
       ),
       maxLines: 1,
       ellipsis: '…',
-      // 🚨 ต้องระบุ ui.TextDirection แบบเจาะจง เพราะ package:intl มีคลาส TextDirection
-      // ของตัวเอง (ค่าเป็น .LTR ตัวใหญ่) ชนกับ dart:ui/material ถ้าเขียนแบบไม่ระบุ prefix
       textDirection: ui.TextDirection.ltr,
     )..layout(maxWidth: maxTextWidth);
 
@@ -108,7 +100,7 @@ class _DormMapScreenState extends ConsumerState<DormMapScreen> {
       text: TextSpan(
         text: priceLabel,
         style: const TextStyle(
-          color: Color(0xFFFFD54F), // เหลืองทอง ให้ราคาเด่นบนพื้นม่วง
+          color: Color(0xFFFFD54F),
           fontSize: 13,
           fontWeight: FontWeight.w800,
           height: 1.15,
@@ -125,10 +117,6 @@ class _DormMapScreenState extends ConsumerState<DormMapScreen> {
     final totalHeight = chipHeight + pointerHeight;
 
     final recorder = ui.PictureRecorder();
-    // 🚨 ห้ามส่ง cullRect แบบพิกัด logical (ไม่ scale) เข้า Canvas() ตรงนี้ — cullRect
-    // ผูกกับพิกัดที่บันทึกจริงหลัง canvas.scale() แล้ว ถ้าใส่กรอบแคบแบบ unscaled มา
-    // เนื้อหาที่วาดหลังจาก scale (ซึ่งพิกัดจะโตขึ้นตาม devicePixelRatio) จะโดนตัดขอบจนแทบไม่เหลือ
-    // เคยเจอปัญหานี้มาก่อน: bitmap สร้างสำเร็จไม่มี error แต่ภาพว่างเปล่าเพราะโดน clip เกือบหมด
     final canvas = Canvas(recorder);
     canvas.scale(_devicePixelRatio);
 
@@ -163,15 +151,9 @@ class _DormMapScreenState extends ConsumerState<DormMapScreen> {
     final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     final bytes = byteData!.buffer.asUint8List();
 
-    // 🚨 ห้ามส่ง width/height พร้อมกับ imagePixelRatio — ตาม docs ของแพ็กเกจ
-    // imagePixelRatio จะถูก "ignore" ทันทีถ้ามี width หรือ height มาด้วย ส่งแค่
-    // imagePixelRatio อย่างเดียวพอ เพราะ byte ที่วาดมาคือขนาดจริงที่ scale ด้วย
-    // devicePixelRatio แล้ว ให้ตัว renderer คำนวณขนาด logical เองจากค่านี้
     return BitmapDescriptor.bytes(bytes, imagePixelRatio: _devicePixelRatio);
   }
 
-  // 🚀 สร้าง/แคชไอคอนของหอพักแต่ละหอแบบ lazy — เรียกจากใน build() แต่ทำงานนอกรอบ build
-  // (สั่ง setState ทีหลังตอนวาดเสร็จ) กันไม่ให้ build() ต้อง await และบล็อกเฟรม
   void _ensureMarkerIcon(DormModel dorm) {
     if (_dormMarkerIcons.containsKey(dorm.id) ||
         _generatingMarkerIds.contains(dorm.id)) {
@@ -446,8 +428,6 @@ class _DormMapScreenState extends ConsumerState<DormMapScreen> {
                           );
 
                           if (distanceInMeters <= (_radiusInKm * 1000)) {
-                            // 🚀 สร้างหมุด "ชื่อหอ + ช่วงราคา" แบบ lazy (วาดครั้งเดียวแคชไว้)
-                            // แทนหมุดเปล่าที่ต้องแตะถึงจะเห็นชื่อ/ราคา
                             _ensureMarkerIcon(dorm);
                             final customIcon = _dormMarkerIcons[dorm.id];
 

@@ -29,7 +29,7 @@ class _RoommateFeedScreenState extends ConsumerState<RoommateFeedScreen> {
   bool _isLoggedIn = false;
 
   RoommateFilters _filters = const RoommateFilters();
-  RoommateSortOption _sortOption = RoommateSortOption.recommended;
+  RoommateSortOption _sortOption = RoommateSortOption.newest;
   Position? _currentPosition;
   bool _isLocating = false;
 
@@ -88,8 +88,6 @@ class _RoommateFeedScreenState extends ConsumerState<RoommateFeedScreen> {
   List<RoommatePostModel> _sortPosts(List<RoommatePostModel> posts) {
     final sorted = [...posts];
     switch (_sortOption) {
-      case RoommateSortOption.recommended:
-        break;
       case RoommateSortOption.newest:
         sorted.sort(
           (a, b) => (b.createdAt ?? DateTime(0)).compareTo(

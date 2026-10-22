@@ -12,7 +12,7 @@ import 'package:find_dorm_mate/features/roommate/domain/roommate_post_model.dart
 import 'package:find_dorm_mate/features/reviews/data/review_repository.dart';
 
 /// หน้า "การจองของฉัน" — แทนที่ระบบคิวเดิมทั้งหมด
-/// แสดงใบจองทุกสถานะ (Pending/Confirmed/Rejected/Cancelled/Expired)
+/// แสดงใบจองทุกสถานะ (Pending/Confirmed/Moved_Out/Rejected/Cancelled/Expired)
 /// ใบจอง Pending จะมีตัวนับถอยหลัง 24 ชม. (Expires_At) และปุ่มยกเลิก
 class MyBookingsScreen extends ConsumerStatefulWidget {
   const MyBookingsScreen({super.key});
@@ -91,7 +91,8 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen> {
         // 🚀 ยกเลิกแล้ว backend คืนสต๊อกห้อง (Remaining_Rooms +1) ใน DB จริงแล้ว เหมือนตอนจอง
         // ต้อง invalidate provider ของหน้ารายละเอียดห้อง/หอ/Home ด้วย ไม่งั้นจะยังโชว์จำนวน
         // ห้องว่างเดิม (ค้างน้อยกว่าความจริง) จนกว่าจะปิดเปิดแอปใหม่
-        if (roomTypeId != null) ref.invalidate(roomTypeDetailProvider(roomTypeId));
+        if (roomTypeId != null)
+          ref.invalidate(roomTypeDetailProvider(roomTypeId));
         if (dormId != null) ref.invalidate(dormDetailProvider(dormId));
         ref.invalidate(dormListProvider);
       } catch (e) {
@@ -285,7 +286,9 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen> {
     final roomType = booking['Room_Type'] ?? {};
     final dorm = booking['Dorm'] ?? {};
     final roomName =
-        roomType['Room_Type_Name'] ?? roomType['Room_Type'] ?? 'ไม่ทราบชื่อห้อง';
+        roomType['Room_Type_Name'] ??
+        roomType['Room_Type'] ??
+        'ไม่ทราบชื่อห้อง';
     final dormName = dorm['Dorm_Name'] ?? '';
     final price = roomType['Price_Per_Month'] ?? 0;
 
@@ -321,6 +324,11 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen> {
         statusColor = Colors.green.shade600;
         statusText = 'ยืนยันการจองแล้ว';
         statusIcon = Icons.check_circle_outline;
+        break;
+      case 'Moved_Out':
+        statusColor = Colors.blueGrey.shade600;
+        statusText = 'ย้ายออกแล้ว';
+        statusIcon = Icons.logout_rounded;
         break;
       case 'Rejected':
         statusColor = Colors.red.shade600;
@@ -536,7 +544,10 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen> {
                     ),
                     child: Text(
                       'เหตุผล: ${booking['Reject_Reason']}',
-                      style: TextStyle(color: Colors.red.shade700, fontSize: 13),
+                      style: TextStyle(
+                        color: Colors.red.shade700,
+                        fontSize: 13,
+                      ),
                     ),
                   ),
                 ],
@@ -553,7 +564,10 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen> {
                       ),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.red.shade600,
-                        side: BorderSide(color: Colors.red.shade400, width: 1.5),
+                        side: BorderSide(
+                          color: Colors.red.shade400,
+                          width: 1.5,
+                        ),
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -562,7 +576,10 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen> {
                       ),
                       child: const Text(
                         'ยกเลิกการจองนี้',
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
@@ -587,7 +604,10 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen> {
                         icon: const Icon(Icons.campaign_outlined),
                         label: const Text(
                           'ดูประกาศหารูมเมทของคุณ',
-                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         style: FilledButton.styleFrom(
                           backgroundColor: Colors.teal,
@@ -655,7 +675,10 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen> {
                         icon: const Icon(Icons.campaign_outlined),
                         label: const Text(
                           'ประกาศหารูมเมท',
-                          style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                         style: FilledButton.styleFrom(
                           backgroundColor: Colors.teal,
@@ -669,9 +692,10 @@ class _MyBookingsScreenState extends ConsumerState<MyBookingsScreen> {
                     ),
                 ],
 
-                // 🚀 รีวิวได้เมื่อยืนยันการจองแล้วเท่านั้น และรีวิวได้แค่ 1 ครั้งต่อใบจอง
+                // 🚀 รีวิวได้ตั้งแต่ยืนยันการจองแล้ว ไปจนถึงหลังย้ายออก และรีวิวได้แค่ 1 ครั้งต่อใบจอง
                 // (เช็คจาก Reviews ที่ backend แนบมากับใบจองนี้แล้ว)
-                if (status == 'Confirmed' && dorm['Dorm_ID'] != null) ...[
+                if ((status == 'Confirmed' || status == 'Moved_Out') &&
+                    dorm['Dorm_ID'] != null) ...[
                   const SizedBox(height: 12),
                   if ((booking['Reviews'] as List?)?.isNotEmpty ?? false)
                     Container(
@@ -799,8 +823,12 @@ class _CountdownBoxTimerState extends State<CountdownBoxTimer> {
     }
 
     String hours = _timeLeft.inHours.toString().padLeft(2, '0');
-    String minutes = (_timeLeft.inMinutes.remainder(60)).toString().padLeft(2, '0');
-    String seconds = (_timeLeft.inSeconds.remainder(60)).toString().padLeft(2, '0');
+    String minutes = (_timeLeft.inMinutes.remainder(
+      60,
+    )).toString().padLeft(2, '0');
+    String seconds = (_timeLeft.inSeconds.remainder(
+      60,
+    )).toString().padLeft(2, '0');
 
     return Row(
       children: [

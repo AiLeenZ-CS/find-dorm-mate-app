@@ -10,14 +10,11 @@ final notificationRepositoryProvider = Provider(
   (ref) => NotificationRepository(),
 );
 
-// 🚀 Provider ดึงแจ้งเตือนของฉัน (เรียงใหม่สุดก่อน จำกัด 50 รายการล่าสุดจาก backend)
 final notificationListProvider =
     FutureProvider.autoDispose<List<AppNotification>>((ref) async {
       return ref.read(notificationRepositoryProvider).getMyNotifications();
     });
 
-// 🚀 Provider จำนวนแจ้งเตือนที่ยังไม่อ่าน — ใช้โชว์ badge ที่ไอคอนกระดิ่ง ไม่มี push ให้ real-time
-// จริง เลี้ยง state ด้วยการ invalidate ตอนเปิด/ปิดหน้าแจ้งเตือนเป็นหลัก (เพียงพอสำหรับ in-app)
 final unreadNotificationCountProvider = FutureProvider.autoDispose<int>((
   ref,
 ) async {
@@ -65,7 +62,8 @@ class NotificationRepository {
       await _dio.patch('$baseUrl/read-all');
     } on DioException catch (e) {
       throw Exception(
-        e.response?.data['message'] ?? 'เกิดข้อผิดพลาดในการมาร์กแจ้งเตือนทั้งหมด',
+        e.response?.data['message'] ??
+            'เกิดข้อผิดพลาดในการมาร์กแจ้งเตือนทั้งหมด',
       );
     }
   }

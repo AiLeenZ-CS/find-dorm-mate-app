@@ -20,7 +20,6 @@ class DormImageCarousel extends StatefulWidget {
 class _DormImageCarouselState extends State<DormImageCarousel> {
   int _currentImageIndex = 0;
 
-  // 🛠️ ฟังก์ชันแกะรูปภาพแบบดักจับทุกรูปแบบ (ตัวเก่งของเรา)
   List<String> _parseImages(String? dataString) {
     if (dataString == null || dataString.trim().isEmpty) return [];
     try {

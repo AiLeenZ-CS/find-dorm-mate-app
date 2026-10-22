@@ -53,9 +53,7 @@ class BookingRepository {
       final response = await _dio.get('$baseUrl/my-bookings');
       return response.data['data'] ?? [];
     } on DioException catch (e) {
-      throw Exception(
-        e.response?.data['message'] ?? 'ดึงข้อมูลใบจองไม่สำเร็จ',
-      );
+      throw Exception(e.response?.data['message'] ?? 'ดึงข้อมูลใบจองไม่สำเร็จ');
     }
   }
 
@@ -72,9 +70,7 @@ class BookingRepository {
       final response = await _dio.get('$baseUrl/owner');
       return response.data['data'] ?? [];
     } on DioException catch (e) {
-      throw Exception(
-        e.response?.data['message'] ?? 'ดึงข้อมูลใบจองไม่สำเร็จ',
-      );
+      throw Exception(e.response?.data['message'] ?? 'ดึงข้อมูลใบจองไม่สำเร็จ');
     }
   }
 
@@ -94,6 +90,16 @@ class BookingRepository {
       );
     } on DioException catch (e) {
       throw Exception(e.response?.data['message'] ?? 'ปฏิเสธใบจองไม่สำเร็จ');
+    }
+  }
+
+  // 🚀 เจ้าของหอแจ้งย้ายออก — ใช้ได้เฉพาะใบจองที่ Confirmed อยู่ คืนสต๊อกห้องให้ทันที
+  // และทำให้สมาชิกคนนี้ไม่มีใบจอง active ค้างอยู่ จองห้องใหม่ได้ (ดูกฎจองได้ทีละห้องใน backend)
+  Future<void> moveOutBooking(int bookingId) async {
+    try {
+      await _dio.patch('$baseUrl/$bookingId/move-out');
+    } on DioException catch (e) {
+      throw Exception(e.response?.data['message'] ?? 'แจ้งย้ายออกไม่สำเร็จ');
     }
   }
 

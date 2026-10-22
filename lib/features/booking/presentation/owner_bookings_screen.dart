@@ -1,8 +1,10 @@
 // 📄 ไฟล์นี้ทำหน้าที่: หน้า "การจองทั้งหมด" ฝั่งเจ้าของหอ (owner) — แสดงใบจองที่เข้ามาทุกหอ
-// ของเจ้าของคนนี้ กรองตามสถานะ และมีปุ่มอนุมัติ/ปฏิเสธ/รายงานผู้จองสำหรับใบจอง Pending/Confirmed
+// ของเจ้าของคนนี้ กรองตามสถานะ มีปุ่มอนุมัติ/ปฏิเสธ/รายงานผู้จองสำหรับใบจอง Pending/Confirmed
+// และปุ่มแจ้งย้ายออกสำหรับใบจอง Confirmed (ปิดการเช่า คืนสต๊อกห้อง)
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../data/booking_repository.dart';
+import 'package:find_dorm_mate/features/dormitory/data/dorm_repository.dart';
 
 /// หน้า "การจองทั้งหมด" — ฝั่งเจ้าของหอพัก
 /// แสดงใบจองที่เข้ามาทุกหอของเจ้าของหอคนนี้ พร้อมปุ่มอนุมัติ/ปฏิเสธสำหรับใบจอง Pending
@@ -24,6 +26,7 @@ class _OwnerBookingsScreenState extends ConsumerState<OwnerBookingsScreen> {
     'All': 'ทั้งหมด',
     'Pending': 'รอตอบรับ',
     'Confirmed': 'ยืนยันแล้ว',
+    'Moved_Out': 'ย้ายออกแล้ว',
     'Rejected': 'ปฏิเสธแล้ว',
     'Cancelled': 'ยกเลิกแล้ว',
     'Expired': 'หมดเวลา',
@@ -54,7 +57,11 @@ class _OwnerBookingsScreenState extends ConsumerState<OwnerBookingsScreen> {
     }
   }
 
-  Future<void> _rejectBooking(int bookingId) async {
+  Future<void> _rejectBooking(
+    int bookingId, {
+    int? roomTypeId,
+    int? dormId,
+  }) async {
     final reasonController = TextEditingController();
     final confirm = await showDialog<bool>(
       context: context,
@@ -119,6 +126,76 @@ class _OwnerBookingsScreenState extends ConsumerState<OwnerBookingsScreen> {
         ),
       );
       ref.invalidate(ownerBookingsProvider);
+      // 🚀 ปฏิเสธแล้ว backend คืนสต๊อกห้อง (Remaining_Rooms +1) จริงแล้ว ต้อง invalidate
+      // provider ของหน้ารายละเอียดห้อง/หอ/Home ด้วย เหมือนตอนสมาชิกยกเลิกเอง (my_bookings_screen.dart)
+      // ไม่งั้นจะยังโชว์จำนวนห้องว่างเดิมจนกว่าจะปิดเปิดแอปใหม่
+      if (roomTypeId != null) ref.invalidate(roomTypeDetailProvider(roomTypeId));
+      if (dormId != null) ref.invalidate(dormDetailProvider(dormId));
+      ref.invalidate(dormListProvider);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString().replaceAll('Exception: ', '')),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _processingIds.remove(bookingId));
+    }
+  }
+
+  // 🚀 แจ้งย้ายออก — ใช้กับใบจองที่ Confirmed อยู่แล้วเมื่อผู้เช่าย้ายออกจริง ปิดการเช่านี้
+  // คืนสต๊อกห้องให้คนอื่นจองต่อได้ และปลดล็อกให้ผู้เช่าคนนี้ไปจองห้องอื่นได้ด้วย
+  Future<void> _moveOutBooking(
+    int bookingId, {
+    int? roomTypeId,
+    int? dormId,
+  }) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text(
+          'แจ้งย้ายออก',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: const Text(
+          'ยืนยันว่าผู้เช่าย้ายออกจากห้องนี้แล้วใช่ไหม? ระบบจะปิดการจองนี้และคืนสต๊อกห้อง '
+          'ให้คนอื่นจองต่อได้ทันที การกระทำนี้ยกเลิกไม่ได้',
+        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('ปิด', style: TextStyle(color: Colors.grey)),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: FilledButton.styleFrom(backgroundColor: _tealAccent),
+            child: const Text('ยืนยันแจ้งย้ายออก'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm != true) return;
+
+    setState(() => _processingIds.add(bookingId));
+    try {
+      await ref.read(bookingRepositoryProvider).moveOutBooking(bookingId);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('แจ้งย้ายออกสำเร็จ คืนสต๊อกห้องแล้ว'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      ref.invalidate(ownerBookingsProvider);
+      // 🚀 ย้ายออกแล้ว backend คืนสต๊อกห้อง (Remaining_Rooms +1) จริงแล้ว ต้อง invalidate
+      // provider ของหน้ารายละเอียดห้อง/หอ/Home ด้วย ไม่งั้นจะยังโชว์จำนวนห้องว่างเดิมจนกว่าจะปิดเปิดแอปใหม่
+      if (roomTypeId != null) ref.invalidate(roomTypeDetailProvider(roomTypeId));
+      if (dormId != null) ref.invalidate(dormDetailProvider(dormId));
+      ref.invalidate(dormListProvider);
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -175,9 +252,7 @@ class _OwnerBookingsScreenState extends ConsumerState<OwnerBookingsScreen> {
           ),
           FilledButton(
             onPressed: () => Navigator.pop(ctx, true),
-            style: FilledButton.styleFrom(
-              backgroundColor: Colors.red.shade600,
-            ),
+            style: FilledButton.styleFrom(backgroundColor: Colors.red.shade600),
             child: const Text('ส่งรายงาน'),
           ),
         ],
@@ -282,7 +357,10 @@ class _OwnerBookingsScreenState extends ConsumerState<OwnerBookingsScreen> {
       child: DropdownMenu<String>(
         initialSelection: _filter,
         expandedInsets: EdgeInsets.zero,
-        leadingIcon: Icon(Icons.filter_list_rounded, color: _tealAccent.shade700),
+        leadingIcon: Icon(
+          Icons.filter_list_rounded,
+          color: _tealAccent.shade700,
+        ),
         label: const Text('กรองตามสถานะ'),
         textStyle: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
         menuStyle: MenuStyle(
@@ -315,8 +393,10 @@ class _OwnerBookingsScreenState extends ConsumerState<OwnerBookingsScreen> {
         },
         dropdownMenuEntries: _filters.entries
             .map(
-              (entry) =>
-                  DropdownMenuEntry<String>(value: entry.key, label: entry.value),
+              (entry) => DropdownMenuEntry<String>(
+                value: entry.key,
+                label: entry.value,
+              ),
             )
             .toList(),
       ),
@@ -359,7 +439,9 @@ class _OwnerBookingsScreenState extends ConsumerState<OwnerBookingsScreen> {
     final profileImage = member['Profile_Image'] as String?;
     final gender = member['Gender'] as String?;
     final roomName =
-        roomType['Room_Type_Name'] ?? roomType['Room_Type'] ?? 'ไม่ทราบชื่อห้อง';
+        roomType['Room_Type_Name'] ??
+        roomType['Room_Type'] ??
+        'ไม่ทราบชื่อห้อง';
     final dormName = dorm['Dorm_Name'] ?? '';
     final price = roomType['Price_Per_Month'] ?? 0;
     final isProcessing = _processingIds.contains(bookingId);
@@ -380,6 +462,11 @@ class _OwnerBookingsScreenState extends ConsumerState<OwnerBookingsScreen> {
         statusColor = Colors.green.shade600;
         statusText = 'ยืนยันแล้ว';
         statusIcon = Icons.check_circle_outline;
+        break;
+      case 'Moved_Out':
+        statusColor = Colors.blueGrey.shade600;
+        statusText = 'ย้ายออกแล้ว';
+        statusIcon = Icons.logout_rounded;
         break;
       case 'Rejected':
         statusColor = Colors.red.shade600;
@@ -642,7 +729,11 @@ class _OwnerBookingsScreenState extends ConsumerState<OwnerBookingsScreen> {
                 child: OutlinedButton.icon(
                   onPressed: isProcessing
                       ? null
-                      : () => _rejectBooking(bookingId),
+                      : () => _rejectBooking(
+                          bookingId,
+                          roomTypeId: roomType['Room_Type_ID'],
+                          dormId: dorm['Dorm_ID'],
+                        ),
                   icon: const Icon(Icons.close, size: 18),
                   label: const Text('ปฏิเสธ'),
                   style: OutlinedButton.styleFrom(
@@ -662,7 +753,11 @@ class _OwnerBookingsScreenState extends ConsumerState<OwnerBookingsScreen> {
                     child: OutlinedButton.icon(
                       onPressed: isProcessing
                           ? null
-                          : () => _rejectBooking(bookingId),
+                          : () => _rejectBooking(
+                              bookingId,
+                              roomTypeId: roomType['Room_Type_ID'],
+                              dormId: dorm['Dorm_ID'],
+                            ),
                       icon: const Icon(Icons.close, size: 18),
                       label: const Text('ปฏิเสธ'),
                       style: OutlinedButton.styleFrom(
@@ -760,7 +855,7 @@ class _OwnerBookingsScreenState extends ConsumerState<OwnerBookingsScreen> {
                       ? null
                       : () => _reportBooking(bookingId),
                   icon: const Icon(Icons.flag_outlined, size: 18),
-                  label: const Text('รายงานผู้ใช้ (จองแล้วไม่จ่ายเงิน)'),
+                  label: const Text('รายงานผู้ใช้'),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.red.shade600,
                     side: BorderSide(color: Colors.red.shade300, width: 1.5),
@@ -771,6 +866,37 @@ class _OwnerBookingsScreenState extends ConsumerState<OwnerBookingsScreen> {
                   ),
                 ),
               ),
+            const SizedBox(height: 8),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                onPressed: isProcessing
+                    ? null
+                    : () => _moveOutBooking(
+                        bookingId,
+                        roomTypeId: roomType['Room_Type_ID'],
+                        dormId: dorm['Dorm_ID'],
+                      ),
+                icon: isProcessing
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : const Icon(Icons.logout_rounded, size: 18),
+                label: const Text('แจ้งย้ายออก'),
+                style: FilledButton.styleFrom(
+                  backgroundColor: Colors.blueGrey.shade600,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+              ),
+            ),
           ],
         ],
       ),

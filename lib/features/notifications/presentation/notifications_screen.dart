@@ -29,9 +29,6 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     _checkLogin();
   }
 
-  // 🛡️ ชั้นป้องกันสำรอง เผื่อหลุดเข้ามาหน้านี้โดยไม่ผ่านปุ่มกระดิ่งปกติ (เช่น deep-link จาก
-  // push notification ตอน session หมดอายุไปแล้วพอดี) กันไม่ให้ไปยิง API ที่ต้อง auth ก่อนรู้ว่า
-  // login อยู่หรือเปล่า
   Future<void> _checkLogin() async {
     final isLoggedIn = await AuthRepository().isLoggedIn();
     if (!mounted) return;
@@ -59,14 +56,12 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
 
   Future<void> _handleTapNotification(AppNotification notification) async {
     if (!notification.isRead) {
-      // 🚀 มาร์กอ่านแบบ optimistic ไม่ต้องรอผล ไม่บล็อกการนำทาง — ถ้าเขียนไม่ผ่านก็แค่
-      // ยังขึ้นตัวหนาอยู่ครั้งถัดมาเฉยๆ ไม่ critical
-      ref.read(notificationRepositoryProvider).markAsRead(notification.id).then((
-        _,
-      ) {
-        ref.invalidate(notificationListProvider);
-        ref.invalidate(unreadNotificationCountProvider);
-      });
+      ref.read(notificationRepositoryProvider).markAsRead(notification.id).then(
+        (_) {
+          ref.invalidate(notificationListProvider);
+          ref.invalidate(unreadNotificationCountProvider);
+        },
+      );
     }
 
     final link = notification.link;
@@ -124,8 +119,7 @@ class _NotificationsScreenState extends ConsumerState<NotificationsScreen> {
     }
 
     final notificationsAsync = ref.watch(notificationListProvider);
-    final hasUnread =
-        notificationsAsync.value?.any((n) => !n.isRead) ?? false;
+    final hasUnread = notificationsAsync.value?.any((n) => !n.isRead) ?? false;
 
     return Scaffold(
       backgroundColor: Colors.grey.shade50,

@@ -137,9 +137,7 @@ class _RoommateDetailScreenState extends ConsumerState<RoommateDetailScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'ส่งข้อความแนะนำตัวสั้นๆ ให้ ${post.memberName} (ไม่บังคับ)',
-            ),
+            Text('ส่งข้อความแนะนำตัวสั้นๆ ให้ ${post.memberName} (ไม่บังคับ)'),
             const SizedBox(height: 12),
             TextField(
               controller: messageController,
@@ -559,7 +557,9 @@ class _RoommateDetailScreenState extends ConsumerState<RoommateDetailScreen> {
     if (_isLoadingSession) {
       return const SizedBox(
         height: 56,
-        child: Center(child: CircularProgressIndicator(color: Colors.deepPurple)),
+        child: Center(
+          child: CircularProgressIndicator(color: Colors.deepPurple),
+        ),
       );
     }
 
@@ -574,9 +574,11 @@ class _RoommateDetailScreenState extends ConsumerState<RoommateDetailScreen> {
       return Consumer(
         builder: (context, ref, child) {
           final metaAsync = ref.watch(postMatchRequestsProvider(post.postId));
-          final matchedCount = metaAsync.value?['post']?['Matched_Count'] as int?;
+          final matchedCount =
+              metaAsync.value?['post']?['Matched_Count'] as int?;
           final matches = metaAsync.value?['matches'] as List?;
-          final hasActiveRequest = matches?.any(
+          final hasActiveRequest =
+              matches?.any(
                 (m) =>
                     m['Match_Status'] == 'Pending' ||
                     m['Match_Status'] == 'Matched',
@@ -653,9 +655,7 @@ class _RoommateDetailScreenState extends ConsumerState<RoommateDetailScreen> {
                             style: OutlinedButton.styleFrom(
                               foregroundColor: Colors.red.shade600,
                               side: BorderSide(color: Colors.red.shade400),
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 14,
-                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(16),
                               ),
@@ -670,9 +670,7 @@ class _RoommateDetailScreenState extends ConsumerState<RoommateDetailScreen> {
                             style: OutlinedButton.styleFrom(
                               foregroundColor: Colors.red.shade600,
                               side: BorderSide(color: Colors.red.shade400),
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 14,
-                              ),
+                              padding: const EdgeInsets.symmetric(vertical: 14),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(16),
                               ),
@@ -681,7 +679,9 @@ class _RoommateDetailScreenState extends ConsumerState<RoommateDetailScreen> {
                   ),
                 ],
               ),
-              if (!canEdit && post.postStatus == 'Searching' && hasActiveRequest) ...[
+              if (!canEdit &&
+                  post.postStatus == 'Searching' &&
+                  hasActiveRequest) ...[
                 const SizedBox(height: 8),
                 Text(
                   'แก้ไขไม่ได้ เพราะมีคนขอจับคู่ประกาศนี้เข้ามาแล้ว',
@@ -790,7 +790,7 @@ class _RoommateDetailScreenState extends ConsumerState<RoommateDetailScreen> {
               );
             }
 
-            // status == 'Rejected' หรือยังไม่เคยส่งคำขอ (null) -> ส่งคำขอได้
+            // status == 'Rejected'/'Unmatched'/'Cancelled' หรือยังไม่เคยส่งคำขอ (null) -> ส่งคำขอได้
             return SizedBox(
               width: double.infinity,
               height: 56,
@@ -798,7 +798,9 @@ class _RoommateDetailScreenState extends ConsumerState<RoommateDetailScreen> {
                 onPressed: _handleSendRequest,
                 icon: const Icon(Icons.person_add_alt_1),
                 label: Text(
-                  status == 'Rejected' ? 'ส่งคำขอจับคู่อีกครั้ง' : 'ส่งคำขอจับคู่',
+                  status == 'Rejected' || status == 'Unmatched'
+                      ? 'ส่งคำขอจับคู่อีกครั้ง'
+                      : 'ส่งคำขอจับคู่',
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,

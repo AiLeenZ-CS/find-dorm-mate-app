@@ -15,7 +15,17 @@ class ApiClient {
   static final Dio instance = _create();
 
   static Dio _create() {
-    final dio = Dio();
+    // 🚨 ต้องตั้ง timeout เอง — ค่า default ของ Dio คือไม่มี timeout เลย (รอ response ไม่จำกัดเวลา)
+    // ถ้า backend ค้าง (เช่น endpoint ลืมรหัสผ่านที่เคยค้างเพราะส่งอีเมลผ่าน SMTP ที่ host บล็อก
+    // outbound port) ปุ่มฝั่งแอปจะหมุนค้างตลอดไปไม่มีวัน error ให้เห็นเลย ตั้ง timeout ไว้ให้
+    // ทุก request fail ไวภายในเวลาที่กำหนดแทน
+    final dio = Dio(
+      BaseOptions(
+        connectTimeout: const Duration(seconds: 15),
+        receiveTimeout: const Duration(seconds: 30),
+        sendTimeout: const Duration(seconds: 30),
+      ),
+    );
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {

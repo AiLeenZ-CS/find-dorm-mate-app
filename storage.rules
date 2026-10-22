@@ -1,0 +1,86 @@
+rules_version = '2';
+
+// 📄 ไฟล์นี้ทำหน้าที่: Firebase Storage Security Rules ของแอป — ควบคุมว่าใครอ่าน/เขียนไฟล์ใน
+// Storage ได้บ้าง ก่อนหน้านี้ไฟล์นี้ไม่เคยอยู่ใน repo (ตั้งค่าตรงใน Firebase Console เท่านั้น
+// มองไม่เห็นว่าเนื้อหาจริงเป็นยังไง) จึงสร้างไว้ให้ track ใน git ด้วย ต้อง copy เนื้อหาไปวางใน
+// Firebase Console เองด้วย (Storage > Rules) เพราะ repo นี้ไม่ได้ deploy ผ่าน Firebase CLI
+//
+// 🔐 บริบทสำคัญที่ต้องเข้าใจก่อนอ่าน rules พวกนี้: แอปนี้ sign in Firebase Auth แบบ anonymous
+// ให้ "ทุกคน" โดยอัตโนมัติตั้งแต่เปิดแอปครั้งแรก (ดู ensureFirebaseSession() ใน
+// find_dorm_mate/lib/features/auth/data/auth_repository.dart) ไม่ว่าจะ login เข้าระบบของเรา
+// จริงหรือไม่ก็ตาม — ใครก็ตามที่มี Firebase config ของโปรเจกต์นี้ (ฝังอยู่ใน APK อยู่แล้ว
+// เปิดดูได้) ก็เรียก signInAnonymously() เองได้เหมือนกัน ดังนั้น "request.auth != null"
+// เพียงอย่างเดียว "ไม่ใช่" การยืนยันตัวตนที่แน่นหนา แค่กันการเข้าถึงแบบไม่ล็อกอินอะไรเลยเท่านั้น
+// (ทุก path เขียนได้แค่ถ้ามี Firebase session ใดๆ ก็ตาม + จำกัดขนาด/ชนิดไฟล์ เป็นการป้องกัน
+// พื้นฐานสุดเท่าที่ทำได้ภายใต้สถาปัตยกรรมปัจจุบันที่ฝั่งแอปอัปโหลดตรงไปที่ Firebase Storage เอง
+// ไม่ผ่าน backend ตรวจสอบก่อน)
+//
+// 🔐 เดิมตั้งใจปิด "read" ทุก path ไว้เป็น if false เพื่อบังคับให้การอ่านรูปภาพทุกครั้งต้องผ่าน
+// backend image-proxy เท่านั้น (ดู Backend/src/controllers/image-proxy.controller.ts) — แต่ทดสอบ
+// จริงแล้วพบว่าทำแบบนั้นไม่ได้ เพราะตอนอัปโหลดไฟล์ ฝั่งแอป (storage_service.dart) ต้องเรียก
+// snapshot.ref.getDownloadURL() ทันทีหลัง putFile() สำเร็จ เพื่อเอา URL ไปส่งให้ backend บันทึก —
+// และ getDownloadURL() ถูกนับเป็น "read" ตาม Storage Rules ด้วย แม้จะเป็นคนอัปโหลดไฟล์เองก็ตาม
+// ถ้าปิด read ไว้ทั้งหมด ฟังก์ชันอัปโหลดรูปจะพังทันที (ยืนยันแล้วจากการทดสอบจริงบนอีมูเลเตอร์ —
+// ได้ 403 PERMISSION_DENIED จาก GetDownloadUrlTask ตอนอัปโหลดรูปโปรไฟล์)
+//
+// จึงเปลี่ยนเป็น allow read: if request.auth != null แทน — อนุญาตอ่านได้ตราบใดที่มี Firebase
+// session ใดๆ ก็ตาม (รวม anonymous) ซึ่งตามบริบทข้างบนก็ยังไม่ได้แน่นหนามาก (ใครก็เรียก
+// signInAnonymously() เองได้) แต่จำเป็นเพื่อให้แอปทำงานได้ และ "write" ก็เงื่อนไขเดียวกันอยู่แล้ว
+// ดังนั้นระดับความปลอดภัยของ read ก็ไม่ได้ต่างจาก write เดิมมากนัก — สิ่งที่ยังป้องกันอยู่คือกัน
+// การเข้าถึงแบบไม่ล็อกอินอะไรเลย ไม่ใช่กันทุกคนที่มี Firebase config ของแอป (ฝังอยู่ใน APK)
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // 🚀 รูปสาธารณะ — โปรไฟล์ผู้ใช้, รูปหอพัก, รูปห้องพัก (อัปโหลดจากแอปโดยตรง ดู
+    // find_dorm_mate/lib/core/services/storage_service.dart)
+    match /profiles/{fileName} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null
+                   && request.resource.size < 5 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+    }
+    match /dorm_images/{fileName} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null
+                   && request.resource.size < 5 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+    }
+    match /room_images/{fileName} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null
+                   && request.resource.size < 5 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+    }
+
+    // 🚀 เอกสารอ่อนไหว — บัตรประชาชน (ตอนสมัคร Owner), เอกสารสิทธิ์ครอบครองหอพัก (ตอนลงประกาศหอพัก)
+    // ⚠️ หมายเหตุด้านความปลอดภัย: เดิมตั้งใจให้อ่านได้เฉพาะผ่าน backend /api/admin/image-proxy
+    // (ต้อง login เป็น Admin/Master_Admin เท่านั้น — ดู admin.route.ts) แต่ตอนนี้ต้องเปิด
+    // allow read: if request.auth != null เหมือน path อื่น เพราะแอป (storage_service.dart)
+    // เรียก getDownloadURL() ทันทีหลังอัปโหลดทุก path เหมือนกันหมด — ถ้าปิด read ไว้
+    // การอัปโหลดบัตรประชาชน/เอกสารสิทธิ์จะพังเหมือนที่ profiles/dorm_images/room_images เคยพัง
+    // ผลคือตอนนี้ไฟล์ในโฟลเดอร์นี้ "อ่านได้" โดยใครก็ตามที่รู้ชื่อไฟล์ตรงๆ (ชื่อไฟล์คือ
+    // millisecond timestamp ตอนอัปโหลด เดาได้ไม่ยากมาก ไม่ใช่ random token) และมี Firebase
+    // session ใดๆ (ซึ่งทุกคนที่เปิดแอปได้ session นี้อัตโนมัติอยู่แล้ว) — ไม่ใช่แค่ Admin เหมือนที่
+    // ตั้งใจไว้เดิม ถ้าต้องการให้เอกสารกลุ่มนี้ปลอดภัยจริง ต้องแก้สถาปัตยกรรมทั้งระบบ (เช่น
+    // ให้ backend เป็นคนอัปโหลด/เซ็น URL แทน ไม่ให้แอป client อัปตรงไปที่ Storage เอง) — ยังไม่ทำ
+    // ในรอบนี้ เพราะเกินสโคปของการแก้บั๊กอัปโหลดรูปพัง
+    match /id_cards/{fileName} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null
+                   && request.resource.size < 10 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+    }
+    match /ownership_proof/{fileName} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null
+                   && request.resource.size < 10 * 1024 * 1024
+                   && request.resource.contentType.matches('image/.*');
+    }
+
+    // 🔐 ปิดทุกอย่างนอกเหนือจาก path ที่อนุญาตไว้ข้างบนโดยตั้งใจ (default deny) — ต้อง
+    // เพิ่ม match block ใหม่ที่นี่เองถ้าจะเปิดโฟลเดอร์เพิ่มในอนาคต ไม่งั้นจะเขียน/อ่านไม่ได้เลย
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}
