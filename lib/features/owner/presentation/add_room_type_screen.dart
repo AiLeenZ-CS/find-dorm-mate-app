@@ -496,8 +496,10 @@ class _AddRoomTypeScreenState extends ConsumerState<AddRoomTypeScreen> {
                               Expanded(
                                 child: AppTextField(
                                   controller: _totalRoomsController,
-                                  labelText: 'จำนวนห้องทั้งหมด',
-                                  prefixIcon: Icons.room_preferences,
+                                  // 🚑 ตัด prefixIcon ออก + ย่อ label จาก "จำนวนห้องทั้งหมด"
+                                  // เพราะช่องนี้กว้างแค่ครึ่งจอ (อยู่ใน Row คู่กับห้องว่าง)
+                                  // label เดิมยาวเกินจนล้นทับขอบช่อง/ตัวเลขที่กรอก
+                                  labelText: 'ห้องทั้งหมด',
                                   keyboardType: TextInputType.number,
                                   accentColor: _tealAccent,
                                   validator: (v) =>
@@ -508,8 +510,7 @@ class _AddRoomTypeScreenState extends ConsumerState<AddRoomTypeScreen> {
                               Expanded(
                                 child: AppTextField(
                                   controller: _remainingRoomsController,
-                                  labelText: 'จำนวนห้องว่าง',
-                                  prefixIcon: Icons.event_available,
+                                  labelText: 'ห้องว่าง',
                                   keyboardType: TextInputType.number,
                                   accentColor: _tealAccent,
                                   validator: (v) =>
