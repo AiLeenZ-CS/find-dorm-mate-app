@@ -82,6 +82,23 @@ class _RoommateFeedScreenState extends ConsumerState<RoommateFeedScreen> {
 
     if (_filters.onlyWithRoom && !post.hasRoomAlready) return false;
 
+    // ประเภทห้องพัก/ช่วงราคา — กรองจากห้องที่ผูกกับประกาศ (ไม่ใช่เงื่อนไขรูมเมท) ถ้าประกาศไม่มี
+    // ข้อมูลห้อง (roomType/roomPrice เป็น null) ให้ผ่านไปก่อน ไม่ตัดทิ้งเพราะข้อมูลไม่ครบ
+    if (_filters.roomType != 'All' &&
+        post.roomType != null &&
+        post.roomType != _filters.roomType) {
+      return false;
+    }
+    final isFullPriceRange =
+        _filters.priceRange.start <= 0 && _filters.priceRange.end >= 15000;
+    if (!isFullPriceRange && post.roomPrice != null) {
+      if (post.roomPrice! < _filters.priceRange.start) return false;
+      if (_filters.priceRange.end < 15000 &&
+          post.roomPrice! > _filters.priceRange.end) {
+        return false;
+      }
+    }
+
     return true;
   }
 

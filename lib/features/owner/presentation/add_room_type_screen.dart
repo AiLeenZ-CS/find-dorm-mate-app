@@ -50,6 +50,7 @@ class _AddRoomTypeScreenState extends ConsumerState<AddRoomTypeScreen> {
   final List<String> _existingImages = [];
   final List<int> _selectedFacilities = []; // Master Facilities (เลือกจาก D5)
   bool _isLoading = false;
+  bool _isDeleting = false;
 
   bool get _isEditMode => widget.existingRoom != null;
 
@@ -228,6 +229,62 @@ class _AddRoomTypeScreenState extends ConsumerState<AddRoomTypeScreen> {
     }
   }
 
+  // 🚀 ลบห้องพักประเภทนี้ — backend จะปฏิเสธถ้ามีคนกำลังจอง/เข้าพักอยู่ (Booking_Status
+  // Pending/Confirmed) กดแล้วต้องยืนยันอีกชั้นเพราะลบแล้วกู้คืนไม่ได้
+  Future<void> _deleteRoom() async {
+    final roomId = widget.existingRoom!.id;
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text(
+          'ลบห้องพักนี้?',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: const Text('ลบแล้วกู้คืนไม่ได้ ยืนยันที่จะลบไหม?'),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('ยกเลิก', style: TextStyle(color: Colors.grey)),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: FilledButton.styleFrom(backgroundColor: Colors.red.shade600),
+            child: const Text('ยืนยันลบ'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm != true) return;
+
+    setState(() => _isDeleting = true);
+    try {
+      await ref.read(dormRepositoryProvider).deleteRoomType(roomId);
+      ref.invalidate(roomTypeDetailProvider(roomId));
+      ref.invalidate(dormDetailProvider(widget.dormId));
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('ลบห้องพักสำเร็จ'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      context.pop();
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString().replaceAll('Exception: ', '')),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isDeleting = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -241,6 +298,23 @@ class _AddRoomTypeScreenState extends ConsumerState<AddRoomTypeScreen> {
         backgroundColor: _tealAccent,
         foregroundColor: Colors.white,
         elevation: 0,
+        actions: [
+          if (_isEditMode)
+            IconButton(
+              onPressed: _isDeleting ? null : _deleteRoom,
+              icon: _isDeleting
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    )
+                  : const Icon(Icons.delete_outline),
+              tooltip: 'ลบห้องพักนี้',
+            ),
+        ],
       ),
       body: _isLoading
           ? Center(

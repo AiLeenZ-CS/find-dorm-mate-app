@@ -39,6 +39,15 @@ const Map<String, String> _cleanLabels = {
   'Any': 'ยังไงก็ได้',
 };
 
+const Map<String, String> _roomTypeLabels = {
+  'All': 'ทั้งหมด',
+  'Air': 'แอร์',
+  'Fan': 'พัดลม',
+};
+
+// 🚀 ใช้ช่วงราคาเดียวกับตัวกรองหน้า Home (home_filters.dart) เพื่อความสม่ำเสมอทั้งแอป
+const double _maxPrice = 15000;
+
 /// ตัวกรองหน้า Feed รูมเมท — กรองตามเงื่อนไขที่ผู้ประกาศระบุไว้ในประกาศเอง (เพศที่ต้องการ,
 /// ช่วงอายุ, เวลานอน, บุหรี่, สัตว์เลี้ยง, ความสะอาด) ธีมเดียวกับ HomeFilterSheet
 class RoommateFilterSheet extends StatefulWidget {
@@ -58,6 +67,8 @@ class _RoommateFilterSheetState extends State<RoommateFilterSheet> {
   late String _cleanliness = widget.initial.cleanliness;
   late RangeValues _ageRange = widget.initial.ageRange;
   late bool _onlyWithRoom = widget.initial.onlyWithRoom;
+  late String _roomType = widget.initial.roomType;
+  late RangeValues _priceRange = widget.initial.priceRange;
 
   void _clearAll() {
     setState(() {
@@ -68,6 +79,8 @@ class _RoommateFilterSheetState extends State<RoommateFilterSheet> {
       _cleanliness = 'All';
       _ageRange = const RangeValues(18, 50);
       _onlyWithRoom = false;
+      _roomType = 'All';
+      _priceRange = const RangeValues(0, _maxPrice);
     });
   }
 
@@ -132,6 +145,63 @@ class _RoommateFilterSheetState extends State<RoommateFilterSheet> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  _SectionTitle(icon: Icons.meeting_room_rounded, title: 'ประเภทห้องพัก'),
+                  const SizedBox(height: 12),
+                  _chipRow(
+                    labels: _roomTypeLabels,
+                    value: _roomType,
+                    onChanged: (v) => setState(() => _roomType = v),
+                  ),
+                  const SizedBox(height: 28),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _SectionTitle(
+                        icon: Icons.payments_rounded,
+                        title: 'ช่วงราคาห้องพัก (บาท/เดือน)',
+                      ),
+                      Text(
+                        '฿${_priceRange.start.toInt()} - ฿${_priceRange.end.toInt() == _maxPrice.toInt() ? '15,000+' : _priceRange.end.toInt()}',
+                        style: const TextStyle(
+                          color: Colors.deepPurple,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  SliderTheme(
+                    data: SliderTheme.of(context).copyWith(
+                      trackHeight: 4,
+                      activeTrackColor: Colors.deepPurple,
+                      inactiveTrackColor: Colors.grey.shade200,
+                      thumbColor: Colors.white,
+                      overlayColor: Colors.deepPurple.withValues(alpha: 0.1),
+                      thumbShape: const RoundSliderThumbShape(
+                        enabledThumbRadius: 10,
+                        elevation: 2,
+                      ),
+                      overlayShape: const RoundSliderOverlayShape(
+                        overlayRadius: 20,
+                      ),
+                    ),
+                    child: RangeSlider(
+                      values: _priceRange,
+                      min: 0,
+                      max: _maxPrice,
+                      divisions: 30,
+                      labels: RangeLabels(
+                        '฿${_priceRange.start.toInt()}',
+                        '฿${_priceRange.end.toInt()}',
+                      ),
+                      onChanged: (values) =>
+                          setState(() => _priceRange = values),
+                    ),
+                  ),
+                  const SizedBox(height: 28),
+
                   _SectionTitle(icon: Icons.wc_rounded, title: 'เพศที่ต้องการ'),
                   const SizedBox(height: 12),
                   _chipRow(
@@ -312,6 +382,8 @@ class _RoommateFilterSheetState extends State<RoommateFilterSheet> {
                       cleanliness: _cleanliness,
                       ageRange: _ageRange,
                       onlyWithRoom: _onlyWithRoom,
+                      roomType: _roomType,
+                      priceRange: _priceRange,
                     ),
                   );
                 },

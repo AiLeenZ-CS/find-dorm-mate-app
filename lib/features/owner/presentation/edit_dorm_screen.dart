@@ -58,6 +58,7 @@ class _EditDormScreenState extends ConsumerState<EditDormScreen> {
 
   bool _isSaving = false;
   bool _isLoadingInitial = false;
+  bool _isDeleting = false;
   String? _loadError;
 
   LatLng? _selectedLocation;
@@ -299,6 +300,63 @@ class _EditDormScreenState extends ConsumerState<EditDormScreen> {
     }
   }
 
+  // 🚀 ลบหอพักนี้ทั้งหอ — backend จะปฏิเสธถ้ามีห้องพักประเภทไหนในหอนี้ที่กำลังมีคนจอง/เข้าพักอยู่
+  // (Booking_Status Pending/Confirmed) กดแล้วต้องยืนยันอีกชั้นเพราะลบแล้วกู้คืนไม่ได้
+  Future<void> _deleteDorm() async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text(
+          'ลบหอพักนี้?',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: const Text(
+          'ลบแล้วจะลบห้องพักทุกประเภท รีวิว และประกาศหารูมเมทของหอนี้ไปด้วย '
+          'กู้คืนไม่ได้ ยืนยันที่จะลบไหม?',
+        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('ยกเลิก', style: TextStyle(color: Colors.grey)),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            style: FilledButton.styleFrom(backgroundColor: Colors.red.shade600),
+            child: const Text('ยืนยันลบ'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm != true) return;
+
+    setState(() => _isDeleting = true);
+    try {
+      await ref.read(dormRepositoryProvider).deleteDorm(widget.dormId);
+      ref.invalidate(ownerDormsProvider);
+
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('ลบหอพักสำเร็จ'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      context.go('/home');
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString().replaceAll('Exception: ', '')),
+          backgroundColor: Colors.red,
+        ),
+      );
+    } finally {
+      if (mounted) setState(() => _isDeleting = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -308,6 +366,23 @@ class _EditDormScreenState extends ConsumerState<EditDormScreen> {
         backgroundColor: _tealAccent,
         foregroundColor: Colors.white,
         elevation: 0,
+        actions: [
+          if (!_isLoadingInitial)
+            IconButton(
+              onPressed: _isDeleting ? null : _deleteDorm,
+              icon: _isDeleting
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    )
+                  : const Icon(Icons.delete_outline),
+              tooltip: 'ลบหอพักนี้',
+            ),
+        ],
       ),
       body: _buildBody(),
     );

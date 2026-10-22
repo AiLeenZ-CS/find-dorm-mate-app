@@ -23,6 +23,7 @@ class RoommatePostModel {
   final String? dormName;
   final String? roomTypeName;
   final double? roomPrice;
+  final String? roomType; // 🆕 'Air'/'Fan' — ใช้กรองที่ตัวกรองรูมเมท (ต่างจาก roomTypeName ที่เป็นชื่อฟรีเท็กซ์)
 
   // 🆕 พิกัดหอพักที่ผู้ประกาศระบุ — ใช้คำนวณระยะทาง "ใกล้ฉัน" ตอนเรียงลำดับที่หน้า Feed รูมเมท
   final double? dormLatitude;
@@ -65,6 +66,7 @@ class RoommatePostModel {
     this.dormName,
     this.roomTypeName,
     this.roomPrice,
+    this.roomType,
     this.dormLatitude,
     this.dormLongitude,
     this.bookingId,
@@ -116,6 +118,7 @@ class RoommatePostModel {
       roomPrice: json['Room_Type']?['Price_Per_Month'] != null
           ? double.tryParse(json['Room_Type']['Price_Per_Month'].toString())
           : null,
+      roomType: json['Room_Type']?['Room_Type'],
       dormLatitude: json['Dorm']?['Latitude'] != null
           ? double.tryParse(json['Dorm']['Latitude'].toString())
           : null,
@@ -161,6 +164,7 @@ class RoommatePostModel {
       dormName: dormName,
       roomTypeName: roomTypeName,
       roomPrice: roomPrice,
+      roomType: roomType,
       dormLatitude: dormLatitude,
       dormLongitude: dormLongitude,
       bookingId: bookingId,

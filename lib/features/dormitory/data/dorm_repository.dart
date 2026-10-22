@@ -176,4 +176,26 @@ class DormRepository {
       );
     }
   }
+
+  // 🚀 ลบห้องพักประเภทนี้ — backend จะปฏิเสธถ้ามีใบจองสถานะ Pending/Confirmed ของห้องนี้อยู่
+  Future<void> deleteRoomType(int roomId) async {
+    try {
+      await _dio.delete('$baseUrl/room-types/$roomId');
+    } on DioException catch (e) {
+      throw Exception(
+        e.response?.data['message'] ?? 'เกิดข้อผิดพลาดในการลบห้องพัก',
+      );
+    }
+  }
+
+  // 🚀 ลบหอพักนี้ทั้งหอ — backend จะปฏิเสธถ้ามีใบจองสถานะ Pending/Confirmed ของห้องไหนในหอนี้อยู่
+  Future<void> deleteDorm(int dormId) async {
+    try {
+      await _dio.delete('$baseUrl/$dormId');
+    } on DioException catch (e) {
+      throw Exception(
+        e.response?.data['message'] ?? 'เกิดข้อผิดพลาดในการลบหอพัก',
+      );
+    }
+  }
 }

@@ -14,6 +14,11 @@ class RoommateFilters {
   final RangeValues ageRange; // 18-50 เต็มช่วง = ไม่กรอง
   final bool onlyWithRoom; // true = โชว์เฉพาะประกาศที่ "มีห้องแล้ว"
 
+  // 🚀 กรองตามห้องพักที่ผูกกับประกาศ (ไม่ใช่เงื่อนไขรูมเมทที่ผู้ประกาศระบุเอง) — ใช้ชื่อฟิลด์/
+  // ช่วงค่าเดียวกับ HomeFilters (home_filters.dart) เพื่อความสม่ำเสมอทั้งแอป
+  final String roomType; // 'All', 'Air', 'Fan'
+  final RangeValues priceRange; // 0-15000 เต็มช่วง = ไม่กรอง (15000 = "15,000+")
+
   const RoommateFilters({
     this.reqGender = 'All',
     this.sleepTime = 'All',
@@ -22,6 +27,8 @@ class RoommateFilters {
     this.cleanliness = 'All',
     this.ageRange = const RangeValues(18, 50),
     this.onlyWithRoom = false,
+    this.roomType = 'All',
+    this.priceRange = const RangeValues(0, 15000),
   });
 
   bool get hasActiveFilters =>
@@ -32,7 +39,10 @@ class RoommateFilters {
       cleanliness != 'All' ||
       ageRange.start > 18 ||
       ageRange.end < 50 ||
-      onlyWithRoom;
+      onlyWithRoom ||
+      roomType != 'All' ||
+      priceRange.start > 0 ||
+      priceRange.end < 15000;
 
   int get activeFilterCount {
     int count = 0;
@@ -43,6 +53,8 @@ class RoommateFilters {
     if (cleanliness != 'All') count++;
     if (ageRange.start > 18 || ageRange.end < 50) count++;
     if (onlyWithRoom) count++;
+    if (roomType != 'All') count++;
+    if (priceRange.start > 0 || priceRange.end < 15000) count++;
     return count;
   }
 
@@ -54,6 +66,8 @@ class RoommateFilters {
     String? cleanliness,
     RangeValues? ageRange,
     bool? onlyWithRoom,
+    String? roomType,
+    RangeValues? priceRange,
   }) {
     return RoommateFilters(
       reqGender: reqGender ?? this.reqGender,
@@ -63,6 +77,8 @@ class RoommateFilters {
       cleanliness: cleanliness ?? this.cleanliness,
       ageRange: ageRange ?? this.ageRange,
       onlyWithRoom: onlyWithRoom ?? this.onlyWithRoom,
+      roomType: roomType ?? this.roomType,
+      priceRange: priceRange ?? this.priceRange,
     );
   }
 }
